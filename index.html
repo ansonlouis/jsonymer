@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JSONymer Editor Demo Page</title>
+
+  <script src="bower_components/platform/platform.js"></script>
+
+  <link rel="import" href="jsonymer-editor.html">
+
+</head>
+<body>
+  <jsonymer-editor id="myJsonEditor"></jsonymer-editor>
+  <script>
+  window.onload = function(){
+    var editor = document.getElementById('myJsonEditor');
+    editor.obj = {
+      "hey" : true
+    };
+  };
+  </script>
+</body>
+</html>
