@@ -1,0 +1,10 @@
+{
+  "name": "jsonymer-editor",
+  "version": "0.0.0",
+  "authors": [
+    "Anson <ansonairoldi@gmail.com>"
+  ],
+  "dependencies" : {
+    "polymer" : "*"
+  }
+}

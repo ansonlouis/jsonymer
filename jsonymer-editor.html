@@ -491,8 +491,6 @@
       // adds an item to an object/array in the JSON
       addItem : function(e, data, el){
 
-        console.log("ADD ITEM:",arguments);
-
         // get the id of the parent that we want to add an item to
         var parentIdx = el.getAttribute('data-idx');
 
@@ -577,7 +575,6 @@
 
       // on focus of item key OR value, enter edit mode for the key/value
       doFocus : function(e, data, el){
-        console.log("FOCUS:",arguments);
 
         var idx = el.getAttribute('data-idx');
 
@@ -633,8 +630,6 @@
       // on blur of key-value box, exit edit mode and accept the new
       // changes for the item
       doBlur : function(e, data, el){
-
-        console.log("BLUR:", arguments);
 
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
