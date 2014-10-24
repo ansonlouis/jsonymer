@@ -19,24 +19,24 @@ jsonymer
 --------
 
 Include the web component file in your webpage *head* (or at the top of another component)
-```
+```HTML
 <link rel="import" href="jsonymer-editor.html">
 ```
 
 Then, place your `jsonymer-editor` element where you'd like it to be
-```
+```HTML
 <jsonymer-editor id="myJsonEditor"></jsonymer-editor>
 ```
 
 Finally, but optionally, give your editor some initial object for editing. If you don't do this, you'll simply start with an empty object. There are two ways to init an object with jsonymer:
 
 #####On the element tag itself using the obj attribute (kinda ugly though)
-```
-// (repeat: kinda ugly though)
+```HTML
+<!-- (repeat: kinda ugly though) -->
 <jsonymer-editor obj="{firstname:'Joe'}"></jsonymer-editor>
 ```
 #####Or, through the Javascript element (by changing the obj property)
-```
+```javascript
 var jsonymerEditor = document.getElementById('myJsonymer');
 
 jsonymerEditor.obj = {
