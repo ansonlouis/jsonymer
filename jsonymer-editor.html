@@ -17,11 +17,12 @@
 
 
       div#wrap{
-        background: #EEE;
+        background:#FFF;
         margin: 10px;
         font-size: 14px;
         font-family: helvetica;
         padding: 10px 4px;
+        border: 1px solid gainsboro;
       }
       ul#master{
         padding: 0px 20px 20px 40px;
@@ -102,8 +103,26 @@
         margin: 7px 10px;
         position: relative;
       }
+      li.item[error] span.key{
+        color: FIREBRICK;
+      }
       li.item[error] span.dash{
         background: rgb(223, 90, 90);
+      }
+      li.item[error] span.dash:before{
+        content: '!';
+        position: absolute;
+        top: -6px;
+        width: 100%;
+        height: 14px;
+        background: rgb(234, 109, 109);
+        border-radius: 100%;
+        text-align: center;
+        font-size: 11px;
+        color: #fff;
+        padding-top: 2px;
+        font-weight: 400;
+        font-family: serif;      
       }
       li.add-item{
         background-repeat: no-repeat;
@@ -210,34 +229,28 @@
       div.controls{
         position: absolute;
         left: -40px;
-        width: 50px;
+        width: 35px;
         opacity: 0;
       }
       div.delete{
         float: left;
-        width: 6px;
-        font-size: 9px;
-        border: 1px solid #CC4141;
-        border-radius: 100%;
-        padding: 1px 3px;
-        text-align: center;
+        font-size: 14px;
+        padding: 0px 3px;
         cursor: pointer;
-        color: #C43232;
-        background: #FDCECE;
-        margin-top: 2px;
+        color: firebrick;
+        margin-top: 1px;
+        font-weight: 700;
       }
       div.remove-type{
         float: left;
         width: 6px;
-        background: #CCC;
-        font-size: 9px;
-        border: 1px solid #999;
-        border-radius: 100%;
-        padding: 1px 3px;
-        margin-top: 2px;
-        color: #999;
+        font-size: 14px;
+        padding: 0px 3px;
+        margin-top: 0px;
+        color: TOMATO;
         cursor: pointer;
-        margin-left: 8px;
+        margin-left: 6px;
+        font-weight: 700;
       }
       li.item:hover > span.key > div.controls{
         opacity: 1;
@@ -267,9 +280,9 @@
                 <span class="key">
 
                   <div class="controls cf">
-                    <div class="delete" data-idx="{{item.idx}}" on-click="{{removeItem}}">X</div>
+                    <div class="delete" data-idx="{{item.idx}}" on-click="{{removeItem}}" title="Remove Item">X</div>
                     <template if="{{item.type}}">
-                      <div data-idx="{{item.idx}}" class="remove-type" on-click="{{removeType}}">&lt;</div>
+                      <div data-idx="{{item.idx}}" class="remove-type" on-click="{{removeType}}" title="Reset Item Type">&lt;</div>
                     </template>
                   </div>
                   
@@ -355,6 +368,8 @@
 
   <script>
   (function(){
+
+    // unique id tracker
     var idx = 0;
 
     Polymer('jsonymer-editor', {
@@ -385,8 +400,12 @@
       focusedItem : null,
 
       // cache of current errors that exist in the JSON document
-      editErrors : {},
+      errors : {},
 
+      // whether the error functionality should be run or not, turn this to false
+      // if you don't care about showing the user errors they may make
+      // (only automatic internal error is the duplicate-key error)
+      errorsOn : true,
 
 
 
@@ -418,12 +437,6 @@
       * do not support native object iteration yet
       *
       */
-
-      // // used in looping the object, since polymer templates
-      // // do not support native object iterations
-      // getKeys : function(v, k){
-      //   return Object.keys(v);
-      // },
       
       // returns true/false if passed argument is an object
       isObject : function(v){
@@ -441,11 +454,6 @@
       isArray : function(v){
         return v instanceof Array
       },
-
-
-      // typeOf : function(v){
-      //   return typeof(v);
-      // },
 
       /** END POLYMER TEMPLATE FILTER FUNCTIONS **/
 
@@ -607,6 +615,10 @@
           if(el.classList.contains('value')){
             var idx = el.getAttribute('data-idx');
             el.blur();
+            var nextFocusable = this.getNextFocusableItem(idx);
+            if(nextFocusable){
+              nextFocusable.focus();
+            }
           }
         }
       },
@@ -619,10 +631,10 @@
         var v = el.innerText;
         if(this.checkDuplicateKeys(idx, v)){
           el.setAttribute('error',true);
-          this.setEditError(idx, "You cannot have duplicate keys in the same level");
+          this.setError(idx, "_dup", "You cannot have duplicate keys in the same level.");
         }else if(el.getAttribute('error')){
           el.removeAttribute('error');
-          this.clearEditError(idx);
+          this.clearError(idx, "_dup");
         }
       },
 
@@ -694,9 +706,70 @@
 
 
 
+      getNextItem : function(idx){
+
+        var obj = this.kArr[idx];
+
+        // if item has children, return first child
+        if(this.isArray(obj.value) && obj.value.length){
+          return obj.value[0];
+        }
+
+        var safety = this.getItemLength();
+
+        while(safety-- > 0){
+          var sibling = this.getNextSibling(obj.idx);
+          if(!sibling && obj.parent){
+            obj = obj.parent;
+          }else{
+            return sibling;
+          }
+        }
+        
+        return null;
+
+      },
 
 
 
+      getNextSibling : function(idx){
+        var obj = this.kArr[idx];
+        // else, go to parent and loop through siblings
+        var siblings = (obj.parent && obj.parent.value) || this.cObj;
+        for(var i=0; i<siblings.length; i++){
+          // if we encounter the target and it has a sibling after it, return that
+          if(siblings[i] === obj && siblings[i+1]){
+            return siblings[i+1];
+          }
+        }
+        return null;
+      },
+
+
+
+      getParent : function(idx){
+        var obj = this.kArr[idx];
+        return obj.parent || this.cObj;
+      },
+
+
+      getNextFocusableItem : function(idx){
+        var nextItem = this.getNextItem(idx);
+        if(nextItem){
+          var item = this.getDomItem(nextItem.idx);
+          var focusable = item.querySelector('[tabIndex="1"]');
+          if(focusable){
+            return focusable;
+          }
+        }else{
+          return this.$['add-item-0'];
+        }
+      },
+
+
+      getItemLength : function(){
+        return Object.keys(this.kArr).length;
+      },
 
 
 
@@ -726,34 +799,55 @@
 
 
 
-      setEditError : function(idx, str){
-        this.editErrors[idx] = {
-          "idx" : idx,
+      setError : function(idx, errorID, str){
+        
+        if(!this.errorsOn){ return; }
+
+        if(!this.errors[idx]){
+          this.errors[idx] = {};
+        }
+
+        this.errors[idx][errorID] = {
           "error" : str
         };
+
         var $item = this.getDomItem(idx);
         $item.setAttribute('error',true);
+        $item.setAttribute('title', str);
 
         this.fire('edit-error');
       },
 
-      clearEditError : function(idx){
 
-        delete this.editErrors[idx];
-        var $item = this.getDomItem(idx);
-        $item.removeAttribute('error');
+      clearError : function(idx, errorID){
 
-        if(this.hasError()){
-          return;
+        if(!this.errorsOn){ return; }
+
+        if(this.errors[idx] && this.errors[idx][errorID]){
+
+          delete this.errors[idx][errorID];
+
+          if(!this.hasError(idx)){
+            delete this.errors[idx];
+            var $item = this.getDomItem(idx);
+            $item.removeAttribute('error');
+            $item.removeAttribute('title');
+
+            if(!this.hasError()){
+              this.fire('edit-clean');
+            }
+
+          }
+
         }
 
-        this.fire('edit-clean');
       },
 
 
-      hasError : function(){
-        for(var k in this.editErrors){
-          return true;
+      hasError : function(idx){
+        var toSearch = idx ? this.errors[idx] : this.errors;
+        for(var k in toSearch){
+          return toSearch[k];
         }
         return false;
       },
