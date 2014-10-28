@@ -20,8 +20,7 @@ jsonymer
 ##TODO
   - Add callback ability to relevant events (onItemAdded, onItemRemoved, onBeforeItemRemoved, etc)
   - Separate some event function bodies into their own standalone methods for easy use
-  - **Bug:** when an item has a duplicate key, and the item *without* the error attached is removed, the item *with* the error attached does not have its error removed (still in error state)  
-
+  - #bug: tiny bug (sorta) where you click "add-item (+)" for an array parent and it stays active (because with arrays its set to stay focus for easy key navigation use)
 
 
 ##Basic Use

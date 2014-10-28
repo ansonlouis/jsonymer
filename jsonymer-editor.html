@@ -14,7 +14,14 @@
       .cf:after {
           clear: both;
       }
-
+      .noselect {
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+      }
 
       div#wrap{
         background:#FFF;
@@ -147,10 +154,12 @@
       a:hover{
         text-decoration: underline;
       }
-      a#add-item-0{
+      a.add-item-master{
         outline: none;
+        font-size: 12px;
       }
-      a#add-item-0:focus{
+      a.add-item-master:focus,
+      a.add-item-master:hover{
         color: #72cbeb;
         text-decoration: underline;
       }
@@ -160,11 +169,12 @@
         top: -4px;
         font-size: 22px;
         cursor: pointer;
+        text-decoration: none;
       }
-      a.add-item:focus{
-        outline: none;
+      a.add-item:focus,
+      a.add-item:hover{
         color: #72cbeb;
-        border-bottom: 2px solid #72cbeb;
+        outline: none;
       }
       span.key-value::selection, 
       span.value::selection{
@@ -258,15 +268,16 @@
     </style>
 
     <div id="wrap">
-
-      <div class="bracket obj"></div>
-
+      <div>
+        <span class="bracket obj"></span>
+        <a id="add-item-start" class="add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"> + Add Item</a>
+      </div>
       <template if="{{cObj}}">
 
           <ul id="master" class="group cf">
 
             <!-- main loop template -->
-            <template id="loop_root" repeat="{{item in cObj}}">
+            <template id="loop_root" repeat="{{item in cObj.value}}">
 
               <!-- each individual item will be one of these: li.item -->
               <li id="item-{{item.idx}}" class="item cf" locked?="{{item.locked}}">
@@ -303,7 +314,7 @@
                   <!-- if the item has a value and its value is object/array, show the opening bracket -->
                   <template if="{{item.value | isObject}}">
                     <span class="bracket {{item.type=='object'?'obj':'arr'}}"></span>
-                    <a data-idx="{{item.idx}}" class="add-item" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}">+</a>
+                    <a data-idx="{{item.idx}}" class="add-item noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}">+</a>
                   </template>
                 </span>
 
@@ -311,9 +322,9 @@
                 
                 <template if="{{item.noValue}}">
                   <span class="dash"></span>
-                  <a class="new-item-option" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">Aa</a>
-                  <a class="new-item-option" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">{ }</a>
-                  <a class="new-item-option" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">[ ]</a>
+                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">Aa</a>
+                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">{ }</a>
+                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">[ ]</a>
                 </template>
 
                 <template if="{{!item.noValue}}">
@@ -351,7 +362,7 @@
 
           <div>
             <span class="bracket bracket-close obj"></span>
-            <a id="add-item-0" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"> + Add Item</a>
+            <a id="add-item-end" class="add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"> + Add Item</a>
           </div>
           
 
@@ -503,7 +514,7 @@
         var parentIdx = el.getAttribute('data-idx');
 
         // get the parent object
-        var targetParent = this.kArr[parentIdx] || false;
+        var targetParent = this.kArr[parentIdx] || this.cObj;
 
         // increment our global unique id index for the new item
         var itemIdx = ++idx;
@@ -518,6 +529,7 @@
           // initially, the item should have "no value", this distinguishes a "false" value from being "no value"
           "noValue" : true,
           "type" : false, // the initial item type (no type)
+          "childKeyIdx" : 0, // this makes adding tons more keys more efficient
         };
 
         // push the new object to either its parent or the master object (top row)
@@ -528,7 +540,7 @@
           }
           targetParent.value.push(newObj);
         }else{
-          this.cObj.push(newObj);
+          this.cObj.value.push(newObj);
         }
         
         // add the new object to the key map object
@@ -557,7 +569,7 @@
 
         var obj = this.kArr[idx];
 
-        var parent = (obj.parent && obj.parent.value) || this.cObj;
+        var parent = (obj.parent && obj.parent.value) || this.cObj.value;
         var itemChildOfArray = this.isItemChildOfArray(idx);
 
         if(parent){
@@ -565,16 +577,27 @@
           for(var i=0; i<parent.length; i++){
             var tObj = parent[i];
             if(tObj.idx === obj.idx){
+
+              // remove item from parent and key map array
               parent.splice(i, 1);
               this.removeItemFromKeyMap(idx);
+
               // clear all errors from this item
               this.clearError(idx);
+
               // if the item was an array item, reset its siblings
               // ids so they are in proper incrementing order
               if(itemChildOfArray){
                 this.resetChildKeys(parent);
               }
+              // if the item is not an array item, lets make sure
+              // that any duplicate key errors are resolved
+              else{
+                this.resetDuplicateKeys(parent, obj.key);
+              }
+
               return;
+
             }
           }
 
@@ -582,19 +605,7 @@
 
       },
 
-      resetChildKeys : function(children){
-        for(var i=0; i<children.length; i++){
-          children[i].key = i;
-        }
-      },
 
-      selectElementContents : function(el){
-          var range = document.createRange();
-          range.selectNodeContents(el);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-      },
 
       // on focus of item key OR value, enter edit mode for the key/value
       doFocus : function(e, data, el){
@@ -615,7 +626,6 @@
         // defer the selection of the items text so it works right
         this.async(function(){
           this.selectElementContents(el);
-          // document.execCommand('selectAll',false,null)
         }, null);
 
       },
@@ -647,10 +657,9 @@
         var v = el.innerText;
         var dup = this.checkDuplicateKeys(idx, v);
         if(dup){
-          el.setAttribute('error',true);
           this.setError(idx, "_dup", "You cannot have duplicate keys in the same level.");
-        }else if(el.getAttribute('error')){
-          el.removeAttribute('error');
+        }else{
+          // var err = this.getError(idx, "_dup");
           this.clearError(idx, "_dup");
         }
       },
@@ -722,6 +731,51 @@
 
 
 
+      // resets an array of array items indexes to be in order
+      resetChildKeys : function(children){
+        for(var i=0; i<children.length; i++){
+          children[i].key = i;
+        }
+      },
+
+
+      // takes an array of item children (object items) and a target
+      // key and makes sure there is only one of them. this is similar to
+      // check duplicate keys but is meant to keep any existing errors if a 
+      // duplicate is found and remove any error if only one is found, this
+      // is meant for when you don't know anything about the items, but only have
+      // a set of children and a single key
+      //
+      // this fixes a bug where if you had a duplicate key between two items,
+      // and you remove the item that DID NOT have the error attached, the item
+      // that DID have the error attached will not be resolved of that error
+      resetDuplicateKeys : function(children, targetKey){
+        var foundItem = false;
+        for(var i=0; i<children.length; i++){
+          var item = children[i];
+          if(item.key === targetKey){
+            if(foundItem){
+              return;
+            }
+            foundItem = item;
+          }
+        }
+        this.clearError(foundItem.idx, "_dup");
+      },
+
+
+      // more browser complient method of selecting the contents
+      // of a element that using document.execCommand('selectAll')
+      selectElementContents : function(el){
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+      },
+
+
+
 
       getNextItem : function(idx){
 
@@ -752,7 +806,7 @@
       getNextSibling : function(idx){
         var obj = this.kArr[idx];
         // else, go to parent and loop through siblings
-        var siblings = (obj.parent && obj.parent.value) || this.cObj;
+        var siblings = (obj.parent && obj.parent.value) || this.cObj.value;
         for(var i=0; i<siblings.length; i++){
           // if we encounter the target and it has a sibling after it, return that
           if(siblings[i] === obj && siblings[i+1]){
@@ -779,7 +833,7 @@
             return focusable;
           }
         }else{
-          return this.$['add-item-0'];
+          return this.$['add-item-end'];
         }
       },
 
@@ -830,7 +884,7 @@
         };
 
         var $item = this.getDomItem(idx);
-        $item.setAttribute('error',true);
+        $item.setAttribute('error', true);
         $item.setAttribute('title', str);
 
         this.fire('edit-error');
@@ -904,6 +958,7 @@
               item = elToFocus;
           }
         }else{
+          console.log(idx,elToFocus);
           item = this.$.master.querySelector('#item-'+idx+' .key-value');
         }
 
@@ -1040,7 +1095,8 @@
               "key" : k,
               "idx" : i,
               "editmode" : 0,
-              "parent" : parent || false          
+              "parent" : parent || false,
+              "childKeyIdx" : 0        
             };
 
             if(nObj.key === "_id" && !nObj.parent){
@@ -1068,9 +1124,15 @@
 
         // reset some variables to ensure the compilation comes out correctly
         idx = 0;
-        this.cObj = [];
+        // this.cObj = [];
+        this.cObj = {
+          "idx" : -1,
+          "value" : [],
+          "childKeyIdx" : 0,
+          "type" : "object"
+        };
         this.kArr = {};
-        return runCompiler(this.obj, this.cObj);
+        return runCompiler(this.obj, this.cObj.value, this.cObj);
 
 
       },
@@ -1129,13 +1191,17 @@
         // start with just "key"
         var prefix = "key";
         var key = prefix;
+
+        var obj = this.kArr[idx];
+
         // start with 1 as the incrementer
-        var i = 1;
+        // var i = ++obj.parent.childKeyIdx;
 
         // as long as the current key is taken, we'll change
         // the increment number until it works
         while(this.checkDuplicateKeys(idx, key)){
-          key = prefix + " (" + (i++) + ")";
+          console.log("CHECKING!!!!");
+          key = prefix + " (" + (++obj.parent.childKeyIdx) + ")";
         }
 
         // return either 'key' or 'key (n)'
@@ -1166,7 +1232,7 @@
       // relative to what they see on screen...this is what you'd use to
       // retrieve the final, pure data object that the user has created
       toJSON : function(){
-        return this.reconstructObject(this.cObj, {});
+        return this.reconstructObject(this.cObj.value, {});
       },
 
 
