@@ -546,12 +546,7 @@
         if(targetParent.type !== "array"){
           this.enterEditModeAsync(itemIdx);
         }
-        // else{
-        //   this.async(function(){
-        //     var itemEl = this.getDomItem(itemIdx);
-        //     itemEl.querySelector('a.new-item-option[data-idx="'+itemIdx+'"]').focus();
-        //   });
-        // }
+
         
       },
 
@@ -563,6 +558,7 @@
         var obj = this.kArr[idx];
 
         var parent = (obj.parent && obj.parent.value) || this.cObj;
+        var itemChildOfArray = this.isItemChildOfArray(idx);
 
         if(parent){
 
@@ -571,6 +567,13 @@
             if(tObj.idx === obj.idx){
               parent.splice(i, 1);
               this.removeItemFromKeyMap(idx);
+              // clear all errors from this item
+              this.clearError(idx);
+              // if the item was an array item, reset its siblings
+              // ids so they are in proper incrementing order
+              if(itemChildOfArray){
+                this.resetChildKeys(parent);
+              }
               return;
             }
           }
@@ -579,7 +582,19 @@
 
       },
 
+      resetChildKeys : function(children){
+        for(var i=0; i<children.length; i++){
+          children[i].key = i;
+        }
+      },
 
+      selectElementContents : function(el){
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+      },
 
       // on focus of item key OR value, enter edit mode for the key/value
       doFocus : function(e, data, el){
@@ -599,8 +614,9 @@
 
         // defer the selection of the items text so it works right
         this.async(function(){
-          document.execCommand('selectAll',false,null)
-        });
+          this.selectElementContents(el);
+          // document.execCommand('selectAll',false,null)
+        }, null);
 
       },
 
@@ -629,7 +645,8 @@
       doKeyUp : function(e, data, el){
         var idx = el.getAttribute('data-idx');
         var v = el.innerText;
-        if(this.checkDuplicateKeys(idx, v)){
+        var dup = this.checkDuplicateKeys(idx, v);
+        if(dup){
           el.setAttribute('error',true);
           this.setError(idx, "_dup", "You cannot have duplicate keys in the same level.");
         }else if(el.getAttribute('error')){
@@ -799,7 +816,7 @@
 
 
 
-      setError : function(idx, errorID, str){
+      setError : function(idx, errorID, str, data){
         
         if(!this.errorsOn){ return; }
 
@@ -808,7 +825,8 @@
         }
 
         this.errors[idx][errorID] = {
-          "error" : str
+          "error" : str,
+          "data" : data
         };
 
         var $item = this.getDomItem(idx);
@@ -818,14 +836,23 @@
         this.fire('edit-error');
       },
 
+      getError : function(idx, errorID){
+        return errorID ? this.errors[idx][errorID] : this.errors[idx];
+      },
+
 
       clearError : function(idx, errorID){
 
         if(!this.errorsOn){ return; }
 
-        if(this.errors[idx] && this.errors[idx][errorID]){
+        if(this.errors[idx]){
 
-          delete this.errors[idx][errorID];
+          if(errorID !== undefined){
+            delete this.errors[idx][errorID];
+          }
+          else{
+            delete this.errors[idx];
+          }
 
           if(!this.hasError(idx)){
             delete this.errors[idx];
@@ -883,7 +910,6 @@
         // get the item obj to focus
         var obj = this.kArr[idx];
 
-
         if(item.classList.contains('key-value') && obj.parent && obj.parent.type === "array"){
           return;
         }
@@ -928,6 +954,7 @@
       // exits the given item from edit mode, this will work whether either key, or value
       // is currently in edit mode
       exitEditMode : function(){
+
         // if we don't have an edit item, return
         if(!this.current_edit_item){
           return;
@@ -956,7 +983,7 @@
 
         // get the items "key" value
         if(keyEl){
-          var key = keyEl.innerText;
+          var key = keyEl.textContent || keyEl.innerText;
           // if the user entered a key with length, then we can use it
           if(key.length){
             obj.key = key;
@@ -964,13 +991,17 @@
           // otherwise, its a blank key, so lets not save it and simply
           // replace the on-screen value with the original key (before edits)
           else{
-            keyEl.innerText = obj.key;
-          }       
+            if(keyEl.textContent){
+              keyEl.textContent = obj.key;
+            }else if(keyEl.innerText){
+              keyEl.innerText = obj.key;
+            }
+          }
         }
 
         // get the items "value" value, same as the above
         if(valueEl){
-          var value = valueEl.innerText;
+          var value = valueEl.textContent || valueEl.innerText;
           if(value.length){
             obj.value = value; 
           }else{
@@ -1073,7 +1104,7 @@
           for(var i=0; i<children.length; i++){
             var sib = children[i];
             if(sib.idx !== item.idx && sib.key === value){
-              return true;
+              return sib;
             }
           }
         }
