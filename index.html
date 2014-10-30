@@ -13,7 +13,10 @@
   <jsonymer-editor id="myJsonEditor"></jsonymer-editor>
   <script>
   window.onload = function(){
+
+
     var editor = document.getElementById('myJsonEditor');
+
     editor.obj = {
       "hey" : true,
       "key" : {
@@ -23,6 +26,37 @@
       },
       "last" : "val"
     };
+
+
+    editor.addEventListener('beforeItemAdded', function(e){
+      // console.log("beforeItemAdded:",this,arguments);
+    }, false);
+
+    editor.addEventListener('itemAdded', function(){
+      // console.log("ITEM ADDED:",this,arguments);
+    }, false);
+
+    editor.addEventListener('beforeItemRemoved', function(e){
+      // console.log("BEFORE ITEM REMOVED:",this,arguments);
+    }, false);
+
+    editor.addEventListener('itemRemoved', function(e){
+      // console.log("ITEM REMOVED:",this,arguments);
+    }, false);
+
+    editor.addEventListener('keyValueChanged', function(e){
+      // console.log("keyValueChanged:",this,arguments);
+    }, false);
+
+    editor.addEventListener('propertyValueChanged', function(e){
+      // console.log("propertyValueChanged:",this,arguments);
+    }, false);
+
+    editor.addEventListener('itemTypeRemoved', function(e){
+      // console.log("itemTypeRemoved:",this,arguments);
+    }, false);
+
+
   };
   </script>
 </body>

@@ -30,6 +30,7 @@
         font-family: helvetica;
         padding: 10px 4px;
         border: 1px solid gainsboro;
+        cursor: default;
       }
       ul#master{
         padding: 0px 20px 20px 40px;
@@ -82,6 +83,7 @@
       li.item span{
         display: inline-block;
         outline: none;
+        vertical-align: top;
       }
       li.item span.key{
         color: rgb(51, 160, 51);
@@ -91,8 +93,11 @@
       li span.value{
         font-weight: 400;
         color: #777;
-        float: left;
         max-width: 500px;
+      }
+      li span.value,
+      li span.key-value{
+        cursor: text;
       }
       .horiz-border, ul.group li ul li span.horiz-border{
         position: absolute;
@@ -104,49 +109,41 @@
       }
       li.item span.dash{
         width: 16px;
-        height: 2px;
-        background: #ccc;
-        float: left;
-        margin: 7px 10px;
+        height: 10px;
+        margin: 3px 5px 0px 7px;
         position: relative;
+        background-image: url(images/arrow-right.png);
+        background-size: 100%;
+        background-repeat: no-repeat;
       }
-      li.item[error] span.key{
+      li.item span.dash.object-dash{
+        margin: 3px 5px;
+      }
+      li.item[error] > span.horiz-border{
+        border-color: rgb(223, 90, 90);
+      }
+      li.item[error] > span.key{
         color: FIREBRICK;
       }
-      li.item[error] span.dash{
+      li.item[error] > span.key span.dash,
+      li.item[error] > span.dash:before{
         background: rgb(223, 90, 90);
+        opacity: 1;
       }
-      li.item[error] span.dash:before{
-        content: '!';
+      li.item[error] > span.key span.dash:before,
+      li.item[error] > span.dash:before{
+        content: '';
         position: absolute;
-        top: -6px;
-        width: 100%;
-        height: 14px;
-        background: rgb(234, 109, 109);
-        border-radius: 100%;
-        text-align: center;
-        font-size: 11px;
-        color: #fff;
-        padding-top: 2px;
-        font-weight: 400;
-        font-family: serif;      
-      }
-      li.add-item{
+        top: -2px;
+        background-image: url(images/error.png);
+        background-size: 100%;
+        background-position: center;
         background-repeat: no-repeat;
         width: 100%;
-        font-size: 14px;
-        color: #777;
-        cursor: pointer;
+        height: 16px;
+        background-color: #FFF;
       }
-      li.add-item{
-        position: absolute;
-        top: 0px;
-        left: 10px;
-      }
-      li.add-item:hover{
-        opacity: .7;
-        text-decoration: underline;
-      }
+
       a{
         color: #555;
         cursor: default;
@@ -154,27 +151,50 @@
       a:hover{
         text-decoration: underline;
       }
-      a.add-item-master{
-        outline: none;
-        font-size: 12px;
-      }
-      a.add-item-master:focus,
-      a.add-item-master:hover{
-        color: #72cbeb;
-        text-decoration: underline;
-      }
+
       a.add-item{
+        position: relative;
+        background-image: url(images/plus.png);
+        background-position: 0px;
+        background-size: 200%;
+        background-repeat: no-repeat;
+        width: 12px;
+        height: 12px;
+        cursor: default;      
+      }
+      a.add-item-child{
         position: absolute;
-        right: -20px;
-        top: -4px;
-        font-size: 22px;
-        cursor: pointer;
-        text-decoration: none;
+        right: -10px;
+        top: 3px;
+      }
+      a.add-item-master{
+        float: left;
+        margin-top: 3px;
+        /*margin-left: 5px;      */
       }
       a.add-item:focus,
       a.add-item:hover{
-        color: #72cbeb;
+        background-position: -12px 0px;
         outline: none;
+      }
+      a.add-item:after{
+        content: '';
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        width: 100px;
+      }
+      a.add-item:focus:after,
+      a.add-item:hover:after{
+        content: 'add new item';
+        position: absolute;
+        font-size: 12px;
+        color: #72cbeb;
+        left: 6px;
+        width: 100px;
+        top: -1px;
+        padding-left: 10px;
       }
       span.key-value::selection, 
       span.value::selection{
@@ -196,60 +216,95 @@
         color: #999;
         cursor: default;
       }
-      span.key-value,
+/*      span.key-value,
       span.value {
         -webkit-user-select: none;
         -moz-user-select: none;
         -khtml-user-select: none;
         -ms-user-select: none;
-      }
+      }*/
       .bracket{
         color: #868686;
+        padding-right: 10px;
       }
-      .bracket.obj:before{
+      .master-bracket{
+        float: left;
+        padding-right: 5px;
+      }
+      .bracket.obj:after{
         padding-left: 4px;
         content: '{';
       }
-      .bracket.arr:before{
+      .bracket.arr:after{
         padding-left: 4px;
         content: '[';
       }
-      .bracket.bracket-close.obj:before{
-        padding-left: 4px;
+      .bracket.bracket-close.obj:after{
+        padding-left: 0;
         content: '}';
       }
-      .bracket.bracket-close.arr:before{
+      .bracket.bracket-close.master-bracket.obj:after{
+        padding-left: 6px;
+      }
+      .bracket.bracket-close.arr:after{
         padding-left: 0;
         content: ']';
       }
       a.new-item-option{
         font-size: 14px;
         cursor: default;
-        margin-right: 10px;
+        margin-right: 5px;
         text-align: center;
+
+        background-size: 100%;
+        background-repeat: no-repeat;
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        opacity: .5;
       }
       a.new-item-option:hover{
         text-decoration: underline;
+        opacity: 1;
       }
       a.new-item-option:focus{
         outline: none;
-        border-bottom: 1px solid #72cbeb;
         color: #72cbeb;
+        opacity: 1;
+      }
+      a.new-item-option.new-item-text{
+        background-image: url(images/text.png);
+      }
+      a.new-item-option.new-item-object{
+        background-image: url(images/obj-bracket.png);
+      }
+      a.new-item-option.new-item-array{
+        background-image: url(images/array-bracket.png);
       }
       div.controls{
         position: absolute;
         left: -40px;
-        width: 35px;
+        width: 40px;
         opacity: 0;
       }
       div.delete{
         float: left;
         font-size: 14px;
         padding: 0px 3px;
-        cursor: pointer;
+        cursor: default;
         color: firebrick;
         margin-top: 1px;
         font-weight: 700;
+
+        background-image: url(images/x.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        width: 11px;
+        height: 11px;
+        margin-left: 2px;
+        padding: 0;
+        margin-top: 3px;
       }
       div.remove-type{
         float: left;
@@ -258,20 +313,42 @@
         padding: 0px 3px;
         margin-top: 0px;
         color: TOMATO;
-        cursor: pointer;
+        cursor: default;
         margin-left: 6px;
         font-weight: 700;
+
+        background-image: url(images/back.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+        padding: 0;
+        margin-top: 0px;
       }
-      li.item:hover > span.key > div.controls{
+      div.delete:hover,
+      div.remove-type:hover{
+        opacity: .7;
+      }
+      li.item > span.key:hover > div.controls{
         opacity: 1;
+      }
+      ul.group li ul.empty{
+        padding: 0px 0px 0px 20px;
+        font-size: 12px;
+        color: #AAA;
+        font-style: italic;
       }
     </style>
 
     <div id="wrap">
-      <div>
-        <span class="bracket obj"></span>
-        <a id="add-item-start" class="add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"> + Add Item</a>
+
+      <div class="cf">
+        <span class="bracket obj master-bracket"></span>
+        <a id="add-item-start" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
       </div>
+
       <template if="{{cObj}}">
 
           <ul id="master" class="group cf">
@@ -280,7 +357,7 @@
             <template id="loop_root" repeat="{{item in cObj.value}}">
 
               <!-- each individual item will be one of these: li.item -->
-              <li id="item-{{item.idx}}" class="item cf" locked?="{{item.locked}}">
+              <li id="item-{{item.idx}}" class="item cf" locked?="{{item.locked}}" on-mouseenter="{{showControls}}" on-mouseleave="{{hideControls}}">
 
 
                 <!-- horizontal border for visual reference with nested children -->
@@ -291,9 +368,9 @@
                 <span class="key">
 
                   <div class="controls cf">
-                    <div class="delete" data-idx="{{item.idx}}" on-click="{{removeItem}}" title="Remove Item">X</div>
+                    <div class="delete" data-idx="{{item.idx}}" on-click="{{removeItem}}" title="Remove Item"></div>
                     <template if="{{item.type}}">
-                      <div data-idx="{{item.idx}}" class="remove-type" on-click="{{removeType}}" title="Reset Item Type">&lt;</div>
+                      <div data-idx="{{item.idx}}" class="remove-type" on-click="{{removeType}}" title="Reset Item Type"></div>
                     </template>
                   </div>
                   
@@ -305,7 +382,7 @@
                   on-focus="{{doFocus}}" 
                   on-keyDown="{{checkEnterKey}}"
                   on-keyUp="{{doKeyUp}}"
-                  on-dblClick="{{doDoubleClick}}"
+                  on-input="{{doInput}}"
                   on-blur="{{doBlur}}"
                   tabIndex="{{item.parent && item.parent.type == 'array' ? -1 : 1}}"
                   disabled?="{{item.parent && item.parent.type == 'array'}}"
@@ -313,18 +390,18 @@
                   
                   <!-- if the item has a value and its value is object/array, show the opening bracket -->
                   <template if="{{item.value | isObject}}">
+                    <span class="dash object-dash"></span>
                     <span class="bracket {{item.type=='object'?'obj':'arr'}}"></span>
-                    <a data-idx="{{item.idx}}" class="add-item noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}">+</a>
+                    <a data-idx="{{item.idx}}" class="add-item add-item-child noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
                   </template>
                 </span>
-
 
                 
                 <template if="{{item.noValue}}">
                   <span class="dash"></span>
-                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">Aa</a>
-                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">{ }</a>
-                  <a class="new-item-option noselect" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1">[ ]</a>
+                  <a class="new-item-option new-item-text noselect" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property a string"></a>
+                  <a class="new-item-option new-item-object noselect" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an object"></a>
+                  <a class="new-item-option new-item-array noselect" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an array"></a>
                 </template>
 
                 <template if="{{!item.noValue}}">
@@ -339,17 +416,28 @@
                     contenteditable?="{{item.editmode}}" 
                     on-focus="{{doFocus}}" 
                     on-keyDown="{{checkEnterKey}}"
+                    on-input="{{doInput}}"
                     on-blur="{{doBlur}}"
-                    on-dblClick="{{doDoubleClick}}"
                     tabIndex="1">{{item.value}}</span>
 
                   </template>
 
                   <template if="{{item.value | isObject}}">
-                    <ul class="group cf deep">
-                      <template ref="loop_root" repeat="{{item in kArr[item.idx].value}}"></template>
-                    </ul>
-                    <span class="bracket bracket-close {{item.type=='object'?'obj':'arr'}}"></span>
+
+                    <template if="{{kArr[item.idx].value.length}}">
+                      <ul class="group cf deep">
+                        <template ref="loop_root" repeat="{{item in kArr[item.idx].value}}"></template>
+                      </ul>
+                    </template>
+
+                    <template if="{{!kArr[item.idx].value.length}}">
+                      <ul class="group empty cf deep">
+                        <li class="item">This item is empty</li>
+                      </ul>
+                    </template>
+
+                    <span class="bracket bracket-close {{item.type=='object'?'obj':'arr'}}">
+                    </span>
                   </template>
 
                 </template>
@@ -360,9 +448,9 @@
 
           </ul>
 
-          <div>
-            <span class="bracket bracket-close obj"></span>
-            <a id="add-item-end" class="add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"> + Add Item</a>
+          <div class="cf">
+            <span class="bracket bracket-close obj master-bracket"></span>
+            <a id="add-item-end" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
           </div>
           
 
@@ -420,7 +508,6 @@
 
 
 
-
       /*
       *
       * POLYMER INTERNAL METHODS
@@ -428,11 +515,21 @@
       */
       created : function(){
         this.obj = {};
-        this.cObj = [];
-        this.kArr = {};
+        this.resetVariables();
       },
       /** END POLYMER INTERNAL METHODS **/
 
+
+      resetVariables : function(){
+        this.cObj = {
+          "idx" : -1,
+          "value" : [],
+          "parent" : false,
+          "childKeyIdx" : 0,
+          "type" : "object"
+        };
+        this.kArr = {};
+      },
 
 
 
@@ -507,6 +604,7 @@
       *
       */
 
+
       // adds an item to an object/array in the JSON
       addItem : function(e, data, el){
 
@@ -515,6 +613,17 @@
 
         // get the parent object
         var targetParent = this.kArr[parentIdx] || this.cObj;
+
+        var eventObj = this.fire('beforeItemAdded', {
+          "parent" : targetParent,
+        });
+
+        // if the user used preventDefault in their callback for
+        // "beforeItemAdded" lets not actually add the item!
+        if(eventObj.defaultPrevented){
+          return;
+        }
+
 
         // increment our global unique id index for the new item
         var itemIdx = ++idx;
@@ -559,6 +668,11 @@
           this.enterEditModeAsync(itemIdx);
         }
 
+
+        this.asyncFire('itemAdded', {
+          item : newObj
+        });
+
         
       },
 
@@ -578,12 +692,24 @@
             var tObj = parent[i];
             if(tObj.idx === obj.idx){
 
+              var eventObj = this.fire('beforeItemRemoved', {
+                "item" : obj,
+              });
+
+              // if the user used preventDefault in their callback for
+              // "beforeItemRemoved" lets not actually remove the item!
+              if(eventObj.defaultPrevented){
+                return;
+              }
+
+              // clear all errors from this item and its children
+              this.clearError(idx);
+              this.clearDescendingErrors(idx);
+
               // remove item from parent and key map array
               parent.splice(i, 1);
               this.removeItemFromKeyMap(idx);
 
-              // clear all errors from this item
-              this.clearError(idx);
 
               // if the item was an array item, reset its siblings
               // ids so they are in proper incrementing order
@@ -595,6 +721,11 @@
               else{
                 this.resetDuplicateKeys(parent, obj.key);
               }
+
+              this.asyncFire('itemRemoved', {
+                "idx" : idx,
+                "parent" : obj.parent
+              });
 
               return;
 
@@ -634,6 +765,7 @@
       // on key down, we check for the enter key to be pressed, as that
       // will trigger the acceptance of the changes
       checkEnterKey : function(e, data, el){
+
         if(e.which === 13){
           // this prevents a new row for key/value boxes
           e.preventDefault();
@@ -641,6 +773,7 @@
           if(el.classList.contains('value')){
             var idx = el.getAttribute('data-idx');
             el.blur();
+            // on enter, focus next value (like tab)
             var nextFocusable = this.getNextFocusableItem(idx);
             if(nextFocusable){
               nextFocusable.focus();
@@ -657,24 +790,43 @@
         var v = el.innerText;
         var dup = this.checkDuplicateKeys(idx, v);
         if(dup){
+          this.setError(dup.idx, "_dup", "You cannot have duplicate keys in the same level.");
           this.setError(idx, "_dup", "You cannot have duplicate keys in the same level.");
         }else{
-          // var err = this.getError(idx, "_dup");
           this.clearError(idx, "_dup");
         }
+      },
+
+
+      doInput : function(e, data, el){
+
+        var key = el.classList.contains('key-value');
+        var idx = el.getAttribute('data-idx');
+        var obj = this.kArr[idx];
+        var val = el.textContent || el.innerText;
+
+        var eventName = "propertyValueChanged";
+        if(key){
+          eventName = "keyValueChanged";
+        }
+
+        this.fire(eventName, {
+          "value" : val,
+          "element" : el,
+          "item" : obj
+        });
+
       },
 
 
       // on blur of key-value box, exit edit mode and accept the new
       // changes for the item
       doBlur : function(e, data, el){
-
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
-
+        this.clearElementSelection();
         this.exitEditMode();
         this.acceptChanges(idx);
-        
       },
 
       makeItemText : function(e, data, el){
@@ -720,11 +872,24 @@
       },
 
       removeType : function(e, data, el){
+
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
+
+        var eventResp = this.fire('itemTypeRemoved', {
+          "item" : obj
+        });
+
+        if(eventResp.defaultPrevented){
+          return;
+        }
+
+        this.clearDescendingErrors(obj.idx);
+        this.removeChildrenFromKeyMap(idx);
         obj.value = false;
         obj.noValue = true;
         obj.type = false;
+
       },
 
       /** END POLYMER TEMPLATE EVENT HOOKS **/
@@ -775,6 +940,19 @@
       },
 
 
+      clearElementSelection : function(){
+        if(window.getSelection){
+          if(window.getSelection().empty){
+            window.getSelection().empty();
+          }
+          else if(window.getSelection().removeAllRanges){
+            window.getSelection().removeAllRanges();
+          }
+        }
+        else if(document.selection){
+          document.selection.empty();
+        }
+      },
 
 
       getNextItem : function(idx){
@@ -805,13 +983,15 @@
 
       getNextSibling : function(idx){
         var obj = this.kArr[idx];
-        // else, go to parent and loop through siblings
-        var siblings = (obj.parent && obj.parent.value) || this.cObj.value;
-        for(var i=0; i<siblings.length; i++){
-          // if we encounter the target and it has a sibling after it, return that
-          if(siblings[i] === obj && siblings[i+1]){
-            return siblings[i+1];
-          }
+        if(obj){
+          // else, go to parent and loop through siblings
+          var siblings = (obj.parent && obj.parent.value) || this.cObj.value;
+          for(var i=0; i<siblings.length; i++){
+            // if we encounter the target and it has a sibling after it, return that
+            if(siblings[i] === obj && siblings[i+1]){
+              return siblings[i+1];
+            }
+          }          
         }
         return null;
       },
@@ -846,26 +1026,23 @@
 
       removeItemFromKeyMap : function(idx){
         
-        var _this = this;
+        // this recurses through all descending children
+        this.removeChildrenFromKeyMap(idx);
+        delete this.kArr[idx];
 
-        var remove = function(item){
+      },
 
-          // if item has children, go through each child and remove them first
-          // in a recursive many (if child has children has children has children, etc)
-          if(item.value && item.value.length){
-            for(var i=0; i<item.value.length; i++){
-              var child = item.value[i];
-              remove(child);
-            }
-          }
-
-          delete _this.kArr[item.idx];
-
-        };
+      removeChildrenFromKeyMap : function(idx){
 
         var item = this.kArr[idx];
-        return remove(item);
-
+        
+        // if item has children, go through each child and remove them first
+        // in a recursive many (if child has children has children has children, etc)
+        if(item.value instanceof Array){
+          for(var i=0; i<item.value.length; i++){
+            this.removeItemFromKeyMap(item.value[i].idx);
+          }
+        }
       },
 
 
@@ -899,6 +1076,7 @@
 
         if(!this.errorsOn){ return; }
 
+
         if(this.errors[idx]){
 
           if(errorID !== undefined){
@@ -920,6 +1098,26 @@
 
           }
 
+        }
+
+      },
+
+      // clear all errors existing on any descending child
+      // if the item is not of array/object type, it will clear
+      // errors from the item itself...if the item IS of array/object
+      // type, no errors will be cleared from the passed item itself
+      clearDescendingErrors : function(idx){
+
+        if(!this.errorsOn){ return; }
+
+        var obj = this.kArr[idx];
+
+        if(obj.value instanceof Array){
+          for(var i=0; i<obj.value.length; i++){
+            this.clearDescendingErrors(obj.value[i].idx);
+          }
+        }else{
+          this.clearError(idx);
         }
 
       },
@@ -958,7 +1156,6 @@
               item = elToFocus;
           }
         }else{
-          console.log(idx,elToFocus);
           item = this.$.master.querySelector('#item-'+idx+' .key-value');
         }
 
@@ -1019,6 +1216,7 @@
         this.current_edit_item = false;
         this.focusedItem.removeAttribute('contenteditable');
         this.focusedItem = false;
+
       },
 
 
@@ -1125,13 +1323,7 @@
         // reset some variables to ensure the compilation comes out correctly
         idx = 0;
         // this.cObj = [];
-        this.cObj = {
-          "idx" : -1,
-          "value" : [],
-          "childKeyIdx" : 0,
-          "type" : "object"
-        };
-        this.kArr = {};
+        this.resetVariables();
         return runCompiler(this.obj, this.cObj.value, this.cObj);
 
 
@@ -1200,7 +1392,6 @@
         // as long as the current key is taken, we'll change
         // the increment number until it works
         while(this.checkDuplicateKeys(idx, key)){
-          console.log("CHECKING!!!!");
           key = prefix + " (" + (++obj.parent.childKeyIdx) + ")";
         }
 

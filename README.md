@@ -8,8 +8,8 @@ jsonymer
 
 
 ##Features
-  - Ability to take in any Javascript Object and make each item editable (as a string)
-  - Add/Remove Items
+  - Ability to take in any Javascript Object and make each item (key and value) editable (as a string)
+  - Add/Remove Items, as well as edit a property type (string/object/array)
   - Tab through every single key/value, as well as through the *add item* buttons for quick editing
   - Simple API to retrieve the edited object in the same format as shown on screen
   - Will automatically generate a unique key if a new item is added to an object with existing children
@@ -18,10 +18,14 @@ jsonymer
   - Of course, built as a polymer web component for ease of use and integration
 
 ##TODO
-  - Add callback ability to relevant events (onItemAdded, onItemRemoved, onBeforeItemRemoved, etc)
   - Separate some event function bodies into their own standalone methods for easy use
-  - #bug: tiny bug (sorta) where you click "add-item (+)" for an array parent and it stays active (because with arrays its set to stay focus for easy key navigation use)
-
+  - bug: tiny bug (sorta) where you click "add-item (+)" for an array parent and it stays active (because with arrays its set to stay focus for easy key navigation use)
+  - bug: firefox - cursor in contenteditable elements is not showing up, also the right-left arrow keys don't move the cursor, although if you click a cursor location and start typing, it seems to take into account the updated cursor position
+  - add google opensource icons
+  - add event data to this readme
+  - collapsable items
+  - add ability for dev to input custom made object that can have predefined properties like "locked/validateMethod/forcePropertyType/etc"
+  
 
 ##Basic Use
 --------
@@ -55,8 +59,9 @@ jsonymerEditor.obj = {
 Keep in mind, any time you change the *obj* property the editor will update automatically!
 
 
-##Methods
------
+##Method
+----
+Although there are many other methods on the Polymer Element, the below methods are the most reliable for you to use externally, and also are probably the only ones you would want/need to use.
 
 ###.toJSON( )
 Returns the object in its final format, as shown on screen.
@@ -90,10 +95,10 @@ Params:
 
 This returns the specific error object with the passed error ID, on the specific item with the passed item ID. If no error id is passed, all errors found on the item with passed item id will be returned.
 
-###.clearError(itemIdx, errorId)
+###.clearError(itemIdx, [errorId])
 Params:
   - The index ID of the item that has the error you need to remove
-  - The unique error ID (you created yourself) that was given when the error was first created
+  - *optional*, The unique error ID (you created yourself) that was given when the error was first created. If not present, all errors for the item will be cleared
 
 **Note:** This method does nothing if you set `jsonymerInstance.errorsOn = false`.
 
@@ -110,4 +115,4 @@ Params:
 
 This compares a prospective key value for an item with the current key values of its siblings and checks if an item already exists with that key. This method returns false if it is safe to apply the key to the item. If a match is found, the first one is immediately returned to you.
 
-
+--------
