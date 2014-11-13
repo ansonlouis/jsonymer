@@ -46,8 +46,8 @@
   app.controller('NavController', function($scope, $route, $routeParams, $location){
     
     $scope.sections = ["About", "Demo", "Docs", "Download"];
-    
-    if($location.$$path === "/"){
+    console.log($location.$$path);
+    if($location.$$path === "/" || $location.$$path === "/jsonymer"){
       $scope.active = $scope.sections[0];
       history.pushState({}, null, "http://ansonlouis.github.io/jsonymer/#" + $scope.active.toLowerCase());
     }
