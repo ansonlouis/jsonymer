@@ -1,0 +1,49 @@
+<div>
+  
+  <div id="about-left" class="left">
+    <h1>
+      jsonymer <span class="operator">==</span> <span class="paren">( </span>json <span class="operator">+</span> polymer<span class="paren"> )</span>
+    </h1>
+
+    <p>
+      jsonymer is a simple <a href="https://www.polymer-project.org/" target="_blank">polymer element</a> that makes editing json data in a web browser quick and painless.
+      <h3>Features</h3>
+      <ul id="features">
+        <li>Edit Javascript Object key->value pairs</li>
+        <li>Add/Remove Items, as well as edit a property type (string/object/array)</li>
+        <li>Basic <i>Tab</i> support for super fast editing</li>
+        <li>Simple API, including plenty of events to eavesdrop on</li>
+        <li>Automatic Unique Key Generation</li>
+        <li>Lets you know if there is an issue with your data (duplicate keys, for instance)</li>
+        <li>Ability to add custom errors</li>
+        <li>Of course, built as a polymer web component for ease of use and integration</li>
+      </ul>
+    </p>
+
+  </div>
+
+  <div id="about-right" class="right">
+    <jsonymer-editor id="jsonymer-home"></jsonymer-editor>
+  </div>
+</div>
+<script>
+
+document.getElementById('jsonymer-home').addEventListener('domReady', function(){
+
+  this.obj = {
+    "key" : "value",
+    "myObject":{
+      "valueArray":["val1","val2","val3"]
+    },
+    "simple":"simpler",
+    "arrrr" : [
+      "hey",
+      "you",
+      "guys!"
+    ]
+  };
+
+
+}, false);
+
+</script>

@@ -1,0 +1,518 @@
+<div id="docs" ng-controller="DocsController">
+
+  <h2>Documentation and Examples</h2>
+  
+  <div class="cf">
+
+    <ul id="doc-items">
+
+      <li 
+        ng-repeat="section in sections" 
+        ng-class="{head : section.head, active : isActive(section)}"
+        ng-click="makeActive($index, true)">
+        {{section.label}}
+      </li>
+
+<!--       <li class="head">Overall</li>
+      <li class="active">Basic Use</li>
+      <li>The jsonymer data structure</li>
+      <li>Dealing with falsey values and types</li>
+      <li>Dealing with errors</li>
+
+      <li class="head">Methods &amp; Properties</li>
+      <li>toJSON()</li>
+      <li>setError()</li>
+      <li>getError()</li>
+      <li>clearError()</li>
+      <li>hasError()</li>
+      <li>checkDuplicateKeys()</li>
+
+      <li class="head">Events</li>
+      <li>beforeItemAdded</li>
+      <li>itemAdded</li>
+      <li>beforeItemRemoved</li>
+      <li>itemRemoved</li>
+      <li>keyValueChanged</li>
+      <li>propertyValueChanged</li>
+      <li>beforeItemTypeRemoved</li>
+      <li>itemTypeRemoved</li>
+      <li>edit</li>
+      <li>dirty</li>
+      <li>clean</li> -->
+
+      <!-- <li ng-repeat="navItems in nav" ng-bind-html="navItems">{{navItems}}</li> -->
+      
+
+
+    </ul>
+
+    <div id="doc-content">
+      
+
+      <div class="block">
+        <a target="Basic Use"></a>
+        <h2>Basic Use</h2>
+        <div class="p">
+          Include the web component file in your webpage <b>head</b> (or at the top of another component)
+          <code class="language-markup" ng-controller="PrismController">
+&lt;link rel="import" href="jsonymer-editor.html">
+          </code>
+
+          Then, place your <span class="code">jsonymer-editor</span> element where you'd like it to be
+          <code class="language-markup" ng-controller="PrismController">
+&lt;jsonymer-editor id="myJsonEditor">&lt;/jsonymer-editor>
+          </code>
+
+          Finally, but optionally, give your editor some initial object for editing. If you don't do this, you'll simply start with an empty object. There are two ways to init an object with jsonymer:
+          <br/><br/>
+          <div><b>On the element tag itself using the obj attribute (kinda ugly though)</b></div>
+          <code class="language-markup" ng-controller="PrismController">
+&lt;!-- (repeat: kinda ugly though) -->
+&lt;jsonymer-editor obj="{firstname:'Joe'}">&lt;/jsonymer-editor>
+          </code>
+          <div><b>Or, through the Javascript element (by changing the obj property)</b></div>
+          <code class="language-javascript" ng-controller="PrismController">
+var jsonymerEditor = document.getElementById('myJsonymer');
+
+jsonymerEditor.obj = {
+  firstname : 'Joe',
+  type : 'Banana'
+};
+          </code>
+          Keep in mind, any time you change the <b>obj</b> property the editor will update automatically!
+        </div>
+      </div>
+      
+      <div class="block">
+        <a target="The jsonymer data structure"></a>
+        <h2>The jsonymer data structure</h2>
+        <div class="p">
+          Although your JSON data may be very simple, the underlying jsonymer data structure needs to be slightly more complex. This is not only to deal with all of the user's edits, but also to be the most performant when working with deep objects.
+
+          When dealing with the API methods and events, many times you'll receive what is called an <span class="code">item object</span>. This is the internal data format for the specific JSON key -> value pair that you are working with. Below is a description of this object.
+        </div>
+        <div class="detail">
+          <h4>item object</h4>
+          <div class="cf">
+            <span>idx</span>
+            <p>the unique index ID of the item</p>
+          </div>
+          <div class="cf">
+            <span>key</span>
+            <p>the key of the key -> value pair</p>
+          </div>
+          <div class="cf">
+            <span>value</span>
+            <p>the value of the key -> value pair</p>
+          </div>
+          <div class="cf">
+            <span>parent</span>
+            <p>a reference to the parent item object</p>
+          </div>
+          <div class="cf">
+            <span>type</span>
+            <p>the type of the item (text / object / array)</p>
+          </div>
+          <div class="cf">
+            <span>childKeyIdx</span>
+            <p>A unique key index that increments along with each child object (if necessary). This helps the automatic key generator be more efficient.</p>
+          </div>
+        </div>
+        <div class="p">
+          Note that the item object for the top level (which holds all top level items) has an idx ID of <span class="code">-1</span>.
+        </div>
+      </div>
+
+
+      <div class="block">
+        <a target="Dealing with falsey values and types"></a>
+        <h2>Dealing with falsey values and types</h2>
+        <p>
+          When parsing JSON, any key -> value pair with a value of <span class="code">undefined</span> gets left behind. It's a little bit different with the jsonymer editor. All falsey values (including <span class="code">undefined</span>) get parsed into their string representations in the editor so they can show up inside the span element accurately.
+          <br/><br/>
+          However, when you receive the object back through <span class="code">.toJSON()</span>, you have some options. Passing true as the first argument will try and convert types away from a simple string if possible. Types that may be converted are <span class="code">ints/floats, null, undefined, true, and false</span>. So, if a user types "null" into a value box, the result of <span class="code">.toJSON(true)</span> will convert that value to actual <span class="code">null</span>. By not passing <b>true</b>, that "null" value will stay as the string representation.
+          <br/><br/>
+          This is more important with <span class="code">undefined</span>, because, as noted before, calling <span class="code">JSON.stringify</span> will ignore any key -> value pair that hold undefined as a value.
+          <br/><br/>
+          Empty strings will stay empty strings.
+        </p>
+      </div>
+
+      <div class="block">
+        <a target="Dealing with errors"></a>
+        <h2>Dealing with errors</h2>
+        <p>
+          The only error that jsonymer handles for you internally is the <b>duplicate key</b> error. This occurs when two (or more) keys in the same level are identical. When this happens, all offending keys are colored red and given an error icon. If you do not want this error to be handled, set the <span class="code">errorsOn</span> property on the jsonymer instance to <b>false</b>.
+          <br/><br/>
+          You can also set your own errors using the <span class="code">.setError()</span> and <span class="code">.clearError()</span> methods. <b>Note:</b> if <span class="code">errorsOn = false</span>, no errors, internal or custom, will be set.
+        </p>
+      </div>
+
+
+      <div id="methods-list" class="block">
+
+        <h2>Methods & Properties</h2>
+        <p id="about-methods">
+          Although there are many other methods on the Polymer Element, the below methods are the most reliable for you to use externally, and also are probably the only ones you would want/need to use.
+        </p>
+        
+        <div class="method">
+          <a target="toJSON()"></a>
+          <h3>.toJSON(<span class="param">[convertTypes=false]</span>, <span class="param">[preserveUndetermined=false]</span>)</h3>
+          <div>
+            <p>Returns the object in its final format, as shown on screen.</p>
+            <div class="io">
+              <h4>Arguments &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">convertTypes</span>
+                <span class="desc">Pass <b>true</b> if you'd like item values to be converted into native types. The possible values that can be converted are <span class="code">numbers/floats, null, undefined, true, and false</span>.</span>
+              </div>
+              <div class="param cf">
+                <span class="name">preserveUndetermined</span>
+                <span class="desc">Pass <b>true</b> if you'd like any data item that has no chosen type (string/object/array) to be preserved in the final object with a value of <b>null</b>. Otherwise, any item with an undetermined type will not be provided in the returned object.</span>
+              </div>
+              <div class="return cf">
+                <span class="type">Object</span>
+                <span class="desc">A Javascript Object containing the users data as it appears on screen</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="method">
+          <a target="setError()"></a>
+          <h3>.setError(<span class="param">itemIdx</span>, <span class="param">errorId</span>, <span class="param">errorStr</span>, <span class="param">data</span>)</h3>
+          <div>
+            <p>
+              This sets an error on a specific object item, making the key of the item a red color, along with an exclaimation mark icon set in between the key and value (these styles can obviously be changed by <i>you</i>). The passed <b>errorStr</b> argument will show up as a native tooltip as the user hovers over the item. The error will then be stored on the <span class="code">jsonymerInstance.errors</span> property, in the format:
+              <code class="language-javascript" ng-controller="PrismController">
+errors : {
+  "&lt;item-idx&gt;" : {
+    "&lt;error-id&gt;" : {
+      "error" : "&lt;error-string&gt;",
+      "data" : "&lt;error-data&gt;"
+    },
+    "&lt;error-id-2&gt;" : { ... }
+  },
+  "&lt;item-idx-2&gt;" : { ... }
+}
+              </code>
+              <b>Note:</b> This method does nothing if you set <span class="code">jsonymerInstance.errorsOn = false</span>.
+            </p>
+            <div class="io">
+              <h4>Params &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">itemIdx</span>
+                <span class="desc">The index ID of the item the error should be set on</span>
+              </div>
+              <div class="param cf">
+                <span class="name">errorId</span>
+                <span class="desc">
+                  A unique error ID (generated by you) that you can use to identify the error. This allows you to have multiple errors on a single item, as well as cherry-pick a specific error to remove when needed.<br/><br/>
+                  <b>Note:</b> the errorId <b>_dup</b> is currently used internally for duplicate key errors, so using that as an errorId may be problematic.
+                </span>
+              </div>
+              <div class="param cf">
+                <span class="name">errorStr</span>
+                <span class="desc">The public facing error string you'd like the user to see when hovering over the item.</span>
+              </div>
+              <div class="param cf">
+                <span class="name">data</span>
+                <span class="desc">Any additional data you need for the error for possible future use when clearing the error</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="method">
+          <a target="getError()"></a>
+          <h3>.getError(<span class="param">itemIdx</span>, <span class="param">[errorId]</span>)</h3>
+          <div>
+            <p>
+              This returns the specific error object with the passed error ID, on the specific item with the passed item ID. If no error id is passed, all errors found on the item with passed item id will be returned.
+            </p>
+            <div class="io">
+              <h4>Params &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">itemIdx</span>
+                <span class="desc">The index ID of the item that has the error you need</span>
+              </div>
+              <div class="param cf">
+                <span class="name">errorId</span>
+                <span class="desc">The error ID that was given when the error was first created</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="method">
+          <a target="clearError()"></a>
+          <h3>.clearError(<span class="param">itemIdx</span>, <span class="param">[errorId]</span>)</h3>
+          <div>
+            <p>
+              Clears the error attached to the given item ID with the given error ID. If no error ID is given, all errors attached to the item will be removed.
+            </p>
+            <div class="io">
+              <h4>Params &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">itemIdx</span>
+                <span class="desc">The index ID of the item that has the error you need to remove</span>
+              </div>
+              <div class="param cf">
+                <span class="name">errorId</span>
+                <span class="desc">The unique error ID (you created yourself) that was given when the error was first created. If not present, all errors for the item will be cleared</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="method">
+          <a target="hasError()"></a>
+          <h3>.hasError(<span class="param">[itemIdx]</span>)</h3>
+          <div>
+            <p>
+              Returns true or false based on whether the specified item (or whole object) has an error or not. If you pass an item ID, the method will return a value based on the <i>validity</i> of that item only. If you do not pass an item ID, the method will return based on the validity of the whole object in total, returning true if any error is found, and false if no errors.
+            </p>
+            <div class="io">
+              <h4>Params &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">itemIdx</span>
+                <span class="desc">the unique item ID that you'd like to check for errors on.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="method">
+          <a target="checkDuplicateKeys()"></a>
+          <h3>.checkDuplicateKeys(<span class="param">itemIdx</span>, <span class="param">value</span>)</h3>
+          <div>
+            <p>
+              This compares a prospective key value for an item with the current key values of its siblings and checks if an item already exists with that key. This method returns false if it is safe to apply the key to the item. If a match is found, the first one is immediately returned to you.
+            </p>
+            <div class="io">
+              <h4>Params &amp; Return Value</h4>
+              <div class="param cf">
+                <span class="name">itemIdx</span>
+                <span class="desc">The index ID of the item that will get a new key</span>
+              </div>
+              <div class="param cf">
+                <span class="name">value</span>
+                <span class="desc">The prospective value for the item (this value will be compared to its siblings)</span>
+              </div>
+              <div class="return cf">
+                <span class="type">item / false</span>
+                <span class="desc">The first sibling item with a key matching the <b>value</b> argument or <b>false</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <!-- end method list -->
+
+      <div id="events-list" class="block">
+        <h2>Events</h2>
+        
+        <p id="about-events">
+          The following events can be listened to on your jsonymer-element using both inline syntax and <span class="code">.addEventListener</span> syntax. All event callbacks are given an <span class="code">event</span> object as the first argument. The <span class="code">event.detail</span> property provides specific details relative to the JSON structure, as defined in each event's description below.
+          <br/><br/>
+          <b>Note:</b> The following inline-syntax example only works when nested inside a polymer element. Otherwise, use the <span class="code">.addEventListener</span> method.
+          <code class="language-markup" ng-controller="PrismController">
+&lt;jsonymer-editor on-edit="myEditMethod" on-itemAdded="{{anItemWasAdded}}">&lt;/jsonymer-editor>
+          </code>
+          <b>or</b>
+          <code class="language-markup" ng-controller="PrismController">
+&lt;jsonymer-editor id="editor">&lt;/jsonymer-editor>
+&lt;script>
+  document.getElementById('editor').addEventListener('itemAdded', function(e){
+    console.log("An item was added!");
+  }, false);
+&lt;/script>
+          </code>
+        </p>
+
+        <div class="event">
+          <a target="beforeItemAdded"></a>
+          <h3>beforeItemAdded</h3>
+          <p>Fires right before an item is added to the JSON structure. Using <span class="code">event.preventDefault()</span> will cause the item to not be added.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>parent</span>
+              <p>the parent item object that the new item will be added to</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="itemAdded"></a>
+          <h3>itemAdded</h3>
+          <p>Fires after an item has been added to the JSON structure.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>item</span>
+              <p>the new item object added to the JSON structure</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="beforeItemRemoved"></a>
+          <h3>beforeItemRemoved</h3>
+          <p>Fires right before an item is removed from the JSON structure. Using <span class="code">event.preventDefault()</span> will cause the item to not be removed.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object that will be removed</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="itemRemoved"></a>
+          <h3>itemRemoved</h3>
+          <p>Fires after an item has been removed from the JSON structure.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>idx</span>
+              <p>the index ID of the item that was removed</p>
+            </div>
+            <div class="cf">
+              <span>parent</span>
+              <p>the parent item object of the item that was removed</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="keyValueChanged"></a>
+          <h3>keyValueChanged</h3>
+          <p>Fires after a item's <b>key</b> has been changed. <b>Note:</b> this event fires on <i>every keystroke</i> in the key input element, however, this <i>does not</i> mean that the key value reflects the actual underlying value for that key. The input element must be <i>blurred</i> before the key value is accepted. This allows you to compare the prospective key value with the current key value and make any validation before proceding.
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>value</span>
+              <p>the value of the key input box</p>
+            </div>
+            <div class="cf">
+              <span>element</span>
+              <p>the HTML element used for user input</p>
+            </div>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object for the key -> value pair</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="propertyValueChanged"></a>
+          <h3>propertyValueChanged</h3>
+          <p>Fires after a item's <b>property</b> has been changed. <b>Note:</b> this event fires on <i>every keystroke</i> in the property input element, however, this <i>does not</i> mean that the property value reflects the actual underlying value for that property. The input element must be <i>blurred</i> before the property value is accepted. This allows you to compare the prospective property value with the current property value and make any validation before proceding.
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>value</span>
+              <p>the value of the value input box</p>
+            </div>
+            <div class="cf">
+              <span>element</span>
+              <p>the HTML element used for user input</p>
+            </div>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object for the key -> value pair</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="beforeItemTypeRemoved"></a>
+          <h3>beforeItemTypeRemoved</h3>
+          <p>Fires right before an item's <i>type</i> has been removed (eg. the item goes back to an undetermined state).  Using <span class="code">event.preventDefault()</span> will cause the item type to not be removed.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object that will lose its type</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="itemTypeRemoved"></a>
+          <h3>itemTypeRemoved</h3>
+          <p>Fires after an item's <i>type</i> has been removed.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object that lost it's type</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="edit"></a>
+          <h3>edit</h3>
+          <p>
+            Fires any time the JSON structure has been edited. This makes it possible to trace many of the element's events with one callback. The <i>edit event</i> fires in conjunction with the <span class="code">itemAdded, itemRemoved, keyValueChanged, propertyValueChanged, and itemTypeRemoved</span> events. The edit event detail will be the same object as documented for each of these corresponding events (depending on what type of edit occurred), along with an additional property of <span class="code">editType</span>.
+          </p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>editType</span>
+              <p>the type of edit that occurred, in the form of the name of the corresponding event</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="dirty"></a>
+          <h3>dirty</h3>
+          <p>Fires when an error occurs within the JSON structure.</p>
+          <div class="detail">
+            <h4>event.detail</h4>
+            <div class="cf">
+              <span>error</span>
+              <p>the internal error object created for the error, as specified in the <b>dealing with errors</b> section</p>
+            </div>
+            <div class="cf">
+              <span>item</span>
+              <p>the item object for the item that the error occurred on</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="event">
+          <a target="clean"></a>
+          <h3>clean</h3>
+          <p>Fires once the JSON structure is void of any errors. No relevant <span class="code">event.detail</span> is provided for this event.</p>
+        </div>
+
+
+      </div>
+      <!-- end #events-list -->
+
+    </div>
+
+  </div>
+
+</div>
