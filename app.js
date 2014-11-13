@@ -13,7 +13,7 @@
     $routeProvider
       .when("/:section", {
         templateUrl : function(params){
-          return "pages/" + params.section + ".html"
+          return _cfg.baseUrl + "/pages/" + params.section + ".html"
         },
         controller : "ContentController"
       }).otherwise({
@@ -27,19 +27,6 @@
   });
 
 
-  app.controller("MainController", function($scope){
-
-    if(DEV){
-      $scope.basePath = "/anson/jsonymer/gh-pages/";
-      $scope.baseUrl = "";
-    }
-    else{
-      $scope.basePath = "/jsonymer/";
-      $scope.baseUrl = "http://ansonlouis.github.io/jsonymer";
-    }
-    console.log("MAIN:",$scope);
-
-  });
 
 
 
@@ -49,7 +36,7 @@
 
     if($location.$$path === "/" || $location.$$path === ""){
       $scope.active = $scope.sections[0];
-      history.pushState({}, null, "http://ansonlouis.github.io/jsonymer/#" + $scope.active.toLowerCase());
+      history.pushState({}, null, _cfg.baseUrl + "/#" + $scope.active.toLowerCase());
     }
 
     $scope.isActive = function(section){
