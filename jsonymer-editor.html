@@ -25,7 +25,7 @@
 
       div#wrap{
         background:#FFF;
-        margin: 10px;
+        /*margin: 10px;*/
         font-size: 14px;
         font-family: helvetica;
         padding: 10px 4px;
@@ -98,6 +98,7 @@
       li span.value,
       li span.key-value{
         cursor: text;
+        position: relative;
       }
       .horiz-border, ul.group li ul li span.horiz-border{
         position: absolute;
@@ -117,7 +118,7 @@
         background-repeat: no-repeat;
       }
       li.item span.dash.object-dash{
-        margin: 3px 5px;
+        margin: 4px 5px 3px 5px;
       }
       li.item[error] > span.horiz-border{
         border-color: rgb(223, 90, 90);
@@ -205,10 +206,31 @@
         box-shadow:0px 2px #72CBEF;
         outline: none;
       }
-      span.key-value[contenteditable]:empty,
-      span.value[contenteditable]:empty{
-        width: 20px;
+      span.key-value:empty,
+      span.value:empty{
+        width: 80px;
+        height: 16px;
+        box-shadow:0px 2px lightgray;
       }
+      span.key-value:focus:empty,
+      span.value:focus:empty{
+        box-shadow:0px 2px #72CBEF;
+      }
+      span.key-value:not(:focus):empty:after,
+      span.value:not(:focus):empty:after{
+        content: 'Empty Key';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        font-size: 12px;
+        font-style: italic;
+        color: #CCC;
+      }
+      span.value:not(:focus):empty:after{
+        content: 'Empty Value';
+      }
+
       span.key-value[contenteditable][error]{
         box-shadow:0px 2px rgb(223, 90, 90);
       }
@@ -226,6 +248,7 @@
       .bracket{
         color: #868686;
         padding-right: 10px;
+        font-family: Consolas, Monaco, 'Andale Mono', monospace;
       }
       .master-bracket{
         float: left;
@@ -389,7 +412,7 @@
                   >{{item.key}}</span>
                   
                   <!-- if the item has a value and its value is object/array, show the opening bracket -->
-                  <template if="{{item.value | isObject}}">
+                  <template if="{{item.value | isArray}}">
                     <span class="dash object-dash"></span>
                     <span class="bracket {{item.type=='object'?'obj':'arr'}}"></span>
                     <a data-idx="{{item.idx}}" class="add-item add-item-child noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
@@ -397,16 +420,16 @@
                 </span>
 
                 
-                <template if="{{item.noValue}}">
+                <template if="{{!item.type}}">
                   <span class="dash"></span>
                   <a class="new-item-option new-item-text noselect" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property a string"></a>
                   <a class="new-item-option new-item-object noselect" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an object"></a>
                   <a class="new-item-option new-item-array noselect" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an array"></a>
                 </template>
 
-                <template if="{{!item.noValue}}">
+                <template if="{{item.type}}">
 
-                  <template if="{{item.value | isNotObject}}">
+                  <template if="{{item.value | isNotArray}}">
 
                     <span class="dash"></span>
 
@@ -422,7 +445,7 @@
 
                   </template>
 
-                  <template if="{{item.value | isObject}}">
+                  <template if="{{item.value | isArray}}">
 
                     <template if="{{kArr[item.idx].value.length}}">
                       <ul class="group cf deep">
@@ -517,6 +540,10 @@
         this.obj = {};
         this.resetVariables();
       },
+
+      domReady : function(){
+        this.fire("domReady");
+      },
       /** END POLYMER INTERNAL METHODS **/
 
 
@@ -531,7 +558,56 @@
         this.kArr = {};
       },
 
+      valToString : function(str){
 
+        var type = typeof(str);
+
+        if(type === "string" || type === "boolean"){
+          return str;
+        }
+
+        if(str === null){
+          return "null";
+        }
+
+        if(str === undefined){
+          return "undefined";
+        }
+
+        return str;
+
+      },
+
+      convertType : function(str){
+
+        if(str === 'null' || str === null){
+          return null;
+        }
+
+        if(str === 'undefined' || str === undefined){
+          return undefined;
+        }
+
+        if(str === 'false' || str === false){
+          return false;
+        }
+
+        if(str === 'true' || str === true){
+          return true;
+        }
+
+        var test = (str.trim && str.trim()) || str;
+        if(test.length === 0 || isNaN(test)){
+          return str;
+        }
+
+        if(!isNaN(str)){
+          return parseFloat(str);
+        }
+
+        return str;
+
+      },
 
 
 
@@ -546,23 +622,26 @@
       *
       */
       
-      // returns true/false if passed argument is an object
-      isObject : function(v){
-        return typeof(v) === "object";
-      },
+      // // returns true/false if passed argument is an object
+      // isObject : function(v){
+      //   return typeof(v) === "object";
+      // },
 
-      // returns true/false if passed argument is NOT an object
-      //
-      // TODO: maybe there is a way to just use isObject for both
-      // instances in the template, but I couldn't find one
-      isNotObject : function(v){
-        return typeof(v) !== "object";
-      },
+      // // returns true/false if passed argument is NOT an object
+      // //
+      // // TODO: maybe there is a way to just use isObject for both
+      // // instances in the template, but I couldn't find one
+      // isNotObject : function(v){
+      //   return typeof(v) !== "object";
+      // },
 
       isArray : function(v){
-        return v instanceof Array
+        return v instanceof Array;
       },
 
+      isNotArray : function(v){
+        return !(v instanceof Array);
+      },
       /** END POLYMER TEMPLATE FILTER FUNCTIONS **/
 
 
@@ -586,7 +665,6 @@
           return this.compileObject();
         }
       },
-
       /** END POLYMER CHANGED EVENT METHODS **/
 
 
@@ -632,11 +710,11 @@
         var newObj = {
           "idx" : itemIdx, // the unique id
           "key" : "key",   // its temporary key value
-          "value" : "value", // its temporary value
+          "value" : null, // its temporary value
           // "editmode" : 1,
           "parent" : targetParent, // the parent of the item
           // initially, the item should have "no value", this distinguishes a "false" value from being "no value"
-          "noValue" : true,
+          // "noValue" : true,
           "type" : false, // the initial item type (no type)
           "childKeyIdx" : 0, // this makes adding tons more keys more efficient
         };
@@ -671,6 +749,11 @@
 
         this.asyncFire('itemAdded', {
           item : newObj
+        });
+
+        this.asyncFire('edit', {
+          item : newObj,
+          editType : "itemAdded"
         });
 
         
@@ -725,6 +808,12 @@
               this.asyncFire('itemRemoved', {
                 "idx" : idx,
                 "parent" : obj.parent
+              });
+              
+              this.asyncFire('edit', {
+                "idx" : idx,
+                "parent" : obj.parent,
+                "editType" : "itemRemoved"
               });
 
               return;
@@ -816,6 +905,13 @@
           "item" : obj
         });
 
+        this.asyncFire('edit', {
+          "value" : val,
+          "element" : el,
+          "item" : obj,
+          "editType" : eventName
+        });
+
       },
 
 
@@ -832,15 +928,18 @@
       makeItemText : function(e, data, el){
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
-        delete obj['noValue'];
         obj.type = "string";
-        obj.value = "Value";
+        obj.value = "";
         this.enterEditModeAsync(idx, 'value');
+        this.fire('edit', {
+          "editType" : "itemTypeChanged",
+          "item" : obj,
+          "type" : "string"
+        });
       },
       makeItemObject : function(e, data, el){
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
-        delete obj['noValue'];
         obj.type = "object";
         obj.value = [];
 
@@ -848,18 +947,27 @@
           var itemEl = this.getDomItem(idx);
           itemEl.querySelector("a.add-item[data-idx='"+idx+"']").focus();
         });
+        this.fire('edit', {
+          "editType" : "itemTypeChanged",
+          "item" : obj,
+          "type" : "object"
+        });
 
       },
       makeItemArray : function(e, data, el){
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
-        delete obj['noValue'];
         obj.type = "array";
         obj.value = [];
 
         this.async(function(){
           var itemEl = this.getDomItem(idx);
           itemEl.querySelector("a.add-item[data-idx='"+idx+"']").focus();
+        });
+        this.fire('edit', {
+          "editType" : "itemTypeChanged",
+          "item" : obj,
+          "type" : "array"
         });
 
       },
@@ -876,7 +984,7 @@
         var idx = el.getAttribute('data-idx');
         var obj = this.kArr[idx];
 
-        var eventResp = this.fire('itemTypeRemoved', {
+        var eventResp = this.fire('beforeItemTypeRemoved', {
           "item" : obj
         });
 
@@ -886,9 +994,17 @@
 
         this.clearDescendingErrors(obj.idx);
         this.removeChildrenFromKeyMap(idx);
-        obj.value = false;
-        obj.noValue = true;
+        obj.value = null;
+        // obj.noValue = true;
         obj.type = false;
+
+        this.fire('itemTypeRemoved', {
+          "item" : obj
+        });
+        this.fire('edit', {
+          "item" : obj,
+          "editType" : "itemTypeRemoved"
+        });
 
       },
 
@@ -1055,16 +1171,23 @@
           this.errors[idx] = {};
         }
 
-        this.errors[idx][errorID] = {
+        var errObj = {
+          "idx" : idx,
+          "errorID" : errorID,
           "error" : str,
           "data" : data
         };
+
+        this.errors[idx][errorID] = errObj;
 
         var $item = this.getDomItem(idx);
         $item.setAttribute('error', true);
         $item.setAttribute('title', str);
 
-        this.fire('edit-error');
+        this.fire('dirty', {
+          error : errObj,
+          item : this.kArr[idx]
+        });
       },
 
       getError : function(idx, errorID){
@@ -1093,7 +1216,7 @@
             $item.removeAttribute('title');
 
             if(!this.hasError()){
-              this.fire('edit-clean');
+              this.fire('clean');
             }
 
           }
@@ -1236,33 +1359,44 @@
 
         // get the items "key" value
         if(keyEl){
-          var key = keyEl.textContent || keyEl.innerText;
-          // if the user entered a key with length, then we can use it
-          if(key.length){
-            obj.key = key;
-          }
-          // otherwise, its a blank key, so lets not save it and simply
-          // replace the on-screen value with the original key (before edits)
-          else{
-            if(keyEl.textContent){
-              keyEl.textContent = obj.key;
-            }else if(keyEl.innerText){
-              keyEl.innerText = obj.key;
-            }
-          }
+
+          var key = keyEl.textContent;// || keyEl.innerText;
+          obj.key = key;
+          keyEl.innerHTML = key;
+          // // if the user entered a key with length, then we can use it
+          // if(key.length){
+          //   obj.key = key;
+          // }
+          // // otherwise, its a blank key, so lets not save it and simply
+          // // replace the on-screen value with the original key (before edits)
+          // else{
+          //   if(keyEl.textContent !== undefined){
+          //     keyEl.textContent = obj.key;
+          //   }else if(keyEl.innerText !== undefined){
+          //     keyEl.innerText = obj.key;
+          //   }
+          // }
         }
 
         // get the items "value" value, same as the above
         if(valueEl){
-          var value = valueEl.textContent || valueEl.innerText;
-          if(value.length){
-            obj.value = value; 
-          }else{
-            valueEl.innerHTML = obj.value;
-          }           
+          var value = valueEl.textContent;// || valueEl.innerText;
+          obj.value = value;
+          valueEl.innerHTML = value;
+          // if(value.length){
+          //   console.log("1");
+          //   obj.value = value; 
+          // }else{
+          //   console.log("2");
+          //   valueEl.innerHTML = obj.value;
+          // }           
         }
 
         this.exitEditMode();
+
+        this.fire('edit', {
+          "editType" : "changesAccepted"
+        });
 
       },
 
@@ -1304,7 +1438,7 @@
             target.push(nObj);
             _this.kArr[i] = nObj;
 
-            if(typeof(obj[k]) === "object"){
+            if(obj[k] && typeof(obj[k]) === "object"){
               nObj.value = [];
               if(obj[k] instanceof Array){
                 nObj.type = "array";
@@ -1315,7 +1449,7 @@
             }
             else{
               nObj.type = "string";
-              nObj.value = obj[k];
+              nObj.value = _this.valToString(obj[k]);
             }
           }
         };
@@ -1422,8 +1556,8 @@
       // returns a JS object in the plain form that the user would expect,
       // relative to what they see on screen...this is what you'd use to
       // retrieve the final, pure data object that the user has created
-      toJSON : function(){
-        return this.reconstructObject(this.cObj.value, {});
+      toJSON : function(convertType, keepUndetermined){
+        return this.reconstructObject(this.cObj.value, {}, convertType, keepUndetermined);
       },
 
 
@@ -1433,7 +1567,7 @@
       // specific to implementation and instance
       // @param: obj - should be this.cObj in order to work correctly
       // @param: target - should initially be plain js object ({}) to start things off
-      reconstructObject : function(obj, target){
+      reconstructObject : function(obj, target, convertType, keepUndetermined){
 
         // for each item in the compiled object array (cObj)
         for(var i=0; i<obj.length; i++){
@@ -1442,7 +1576,7 @@
 
           // if the item doesnt have a designated type,
           // don't include it in the final product
-          if(!o.type){
+          if(!keepUndetermined && !o.type){
             continue;
           }
 
@@ -1451,7 +1585,7 @@
 
           // if the items value is an object type,
           // it must have children
-          if(typeof(val) === "object"){
+          if(val instanceof Array){
             // array types obviously become arrays
             if(o.type === "array"){
               target[key] = [];
@@ -1462,10 +1596,13 @@
             }
             // recurse back through with the new value array
             // and the child object
-            this.reconstructObject(o.value, target[key]);
+            this.reconstructObject(o.value, target[key], convertType, keepUndetermined);
           }
           // otherwise, we're dealing with a static string or number (no children)
           else{
+            if(convertType){
+              val = this.convertType(val);
+            }
             target[key] = val;
           }
         }
