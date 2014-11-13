@@ -53,8 +53,7 @@
     }
 
     $scope.isActive = function(section){
-      console.log("isActive:", $scope.active, section);
-      return $scope.active === section;
+      return $scope.active === section.toLowerCase();
     };
 
   });  
