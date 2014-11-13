@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en" ng-app="jsonymer">
+<html lang="en" ng-app="jsonymer" ng-controller="MainController">
 <head>
   <meta charset="UTF-8">
-  <base href="/">
+  <base href="{{basePath}}">
   <title>jsonymer editor</title>
   <link href="http://fonts.googleapis.com/css?family=RobotoDraft:300,400,500|Source+Code+Pro:400,500,700" rel="stylesheet">
-  <link href="styles.css" rel="stylesheet" type="text/css"/>
-  <link href="prism.css" rel="stylesheet" type="text/css"/>
+  <link href="jsonymer/styles.css" rel="stylesheet" type="text/css"/>
+  <link href="jsonymer/prism.css" rel="stylesheet" type="text/css"/>
 
-  <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-  <script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
-  <script type="text/javascript" src="prism.js"></script>
+  <script type="text/javascript" src="jsonymer/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="jsonymer/bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="jsonymer/bower_components/angular-route/angular-route.min.js"></script>
+  <script type="text/javascript" src="jsonymer/prism.js"></script>
 
 
-  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="jsonymer/app.js"></script>
 
-  <link rel="import" href="jsonymer/jsonymer-editor.html">
+  <link rel="import" href="jsonymer/jsonymer/jsonymer-editor.html">
 
 
   <style>

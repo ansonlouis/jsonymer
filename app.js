@@ -2,6 +2,10 @@
 
 (function(){
 
+
+  var DEV = false;
+
+
   var app = angular.module('jsonymer', ['ngRoute']);
 
   app.config(function($routeProvider, $locationProvider){
@@ -18,10 +22,25 @@
         }
       });
 
-
       // $locationProvider.html5Mode(true);
 
   });
+
+
+  app.controller("MainController", function($scope){
+
+    if(DEV){
+      $scope.basePath = "/anson/jsonymer/gh-pages/";
+      $scope.baseUrl = "";
+    }
+    else{
+      $scope.basePath = "/jsonymer/";
+      $scope.baseUrl = "http://ansonlouis.github.io/jsonymer";
+    }
+    console.log("MAIN:",$scope);
+
+  });
+
 
 
   app.controller('NavController', function($scope, $route, $routeParams, $location){
