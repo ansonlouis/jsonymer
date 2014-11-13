@@ -46,15 +46,16 @@
   app.controller('NavController', function($scope, $route, $routeParams, $location){
     
     $scope.sections = ["About", "Demo", "Docs", "Download"];
-    console.log($location.$$path);
+
     if($location.$$path === "/" || $location.$$path === ""){
       $scope.active = $scope.sections[0];
       history.pushState({}, null, "http://ansonlouis.github.io/jsonymer/#" + $scope.active.toLowerCase());
     }
 
     $scope.isActive = function(section){
+      console.log("isActive:", $scope.active, section);
       return $scope.active === section;
-    }
+    };
 
   });  
 
