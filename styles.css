@@ -67,10 +67,17 @@ header{
   color: #DDD;
   font-weight: 300;
 }
-header span{
+header span.logo{
   float: left;
   font-size: 30px;
   padding: 10px 0px 0px 85px;
+  position: relative;
+}
+header span.logo .version{
+  font-size: 12px;
+  position: absolute;
+  right: -15px;
+  bottom: -7px;
 }
 header ul{
   float: right;
