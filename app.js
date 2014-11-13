@@ -49,7 +49,7 @@
     
     if($location.$$path === "/"){
       $scope.active = $scope.sections[0];
-      history.pushState({}, null, "/#" + $scope.active);
+      history.pushState({}, null, "/#" + $scope.active.toLowerCase());
     }
 
     $scope.isActive = function(section){

@@ -32,7 +32,7 @@
     <span>jsonymer</span>
     <ul class="cf">
       <li ng-repeat="section in sections" ng-class="{active : isActive(section)}">
-        <a href="#/{{section}}">{{section}}</a>
+        <a href="#/{{section | lowercase}}">{{section}}</a>
       </li>
     </ul>
   </header>
