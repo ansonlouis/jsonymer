@@ -47,7 +47,7 @@
     
     $scope.sections = ["About", "Demo", "Docs", "Download"];
     console.log($location.$$path);
-    if($location.$$path === "/" || $location.$$path === "/jsonymer"){
+    if($location.$$path === "/" || $location.$$path === ""){
       $scope.active = $scope.sections[0];
       history.pushState({}, null, "http://ansonlouis.github.io/jsonymer/#" + $scope.active.toLowerCase());
     }
