@@ -132,6 +132,13 @@ header ul li.active:after {
 #about-right{
   width: 45%;
 }
+#install-tidbit{
+  padding-top: 20px;
+}
+#install-tidbit h3 a{
+  font-size: 14px;
+  padding-top: 6px;
+}
 h1 span.operator{
   color: #9b2d58;
   font-weight: 400;
@@ -153,8 +160,11 @@ span.code-block{
   background-color: #FFF;
   font-family: consolas;
 }
-span.code-block .command-line-gt{
+span.code-block .hl-gray{
   color: #999;
+}
+span.code-block .hl-red{
+  color: #9b2d58;
 }
 /**/
 
