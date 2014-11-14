@@ -1,16 +1,16 @@
 {
   "name": "jsonymer-editor",
-  "description" : "A Polymer Web Component to edit a JSON structure",
+  "description": "A Polymer Web Component to edit a JSON structure",
   "version": "0.0.1",
-  "license" : "MIT",
-  "main" : "jsonymer-editor.html",
+  "license": "MIT",
+  "main": "jsonymer-editor.html",
   "authors": [
     "Anson <ansonairoldi@gmail.com>"
   ],
-  "dependencies" : {
-    "polymer" : "Polymer/polymer#master"
+  "dependencies": {
+    "polymer": "Polymer/polymer#master"
   },
-  "keywords" : [
+  "keywords": [
     "web-components",
     "polymer"
   ]

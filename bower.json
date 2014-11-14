@@ -1,11 +1,11 @@
 {
   "name": "jsonymer-site",
-  "description" : "Website Docs for jsonymer editor",
+  "description": "Website Docs for jsonymer editor",
   "version": "0.1.0",
   "authors": [
     "Anson <ansonairoldi@gmail.com>"
   ],
-  "dependencies" : {
-    "polymer" : "Polymer/polymer#master"
+  "dependencies": {
+    "polymer": "Polymer/polymer#master"
   }
 }
