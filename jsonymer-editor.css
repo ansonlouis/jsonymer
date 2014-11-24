@@ -1,0 +1,350 @@
+/*jsonymer-editor.css*/
+
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table; /* 2 */
+}
+.cf:after {
+    clear: both;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div#wrap{
+  background:#FFF;
+  font-size: 14px;
+  font-family: helvetica;
+  padding: 10px 4px;
+  border: 1px solid gainsboro;
+  cursor: default;
+}
+ul#master{
+  padding: 0px 20px 20px 40px;
+  border-left: 1px dashed #CCC;
+  margin:4px 6px;
+}
+
+#none-found{
+  padding: 20px;
+  font-size: 18px;
+  color: #999;
+}
+ul, li{
+  list-style: none;
+  position: relative;
+  margin: 0;
+  padding:0;
+}
+
+ul.group{
+  float: none;
+  clear: both;
+}
+ul.group li ul{
+  padding: 0 0 0 40px;
+  border-left: 1px dashed #CCC;
+}
+li.item{
+  margin: 10px 0px 10px 0px;
+  position: relative;
+}
+li.item[locked]{
+  background: #EEE;
+}
+li.item[locked] span{
+  color: #999;
+}
+li.item[error]:before{
+  content: '';
+  background: rgb(255, 202, 202);
+  position: absolute;
+  right: 0;
+  top: -2px;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  padding: 4px;
+  z-index: -1;
+}
+li.item span{
+  display: inline-block;
+  outline: none;
+  vertical-align: top;
+}
+li.item span.key{
+  color: rgb(51, 160, 51);
+  float: left;
+  position: relative;
+}
+li span.value{
+  font-weight: 400;
+  color: #777;
+  max-width: 500px;
+}
+li span.value,
+li span.key-value{
+  cursor: text;
+  position: relative;
+}
+.horiz-border, ul.group li ul li span.horiz-border{
+  position: absolute;
+  width: 30px;
+  height: 1px;
+  border-bottom: 1px dashed #CCC;
+  left: -35px;
+  top: 7px;
+}
+li.item span.dash{
+  width: 16px;
+  height: 10px;
+  margin: 3px 5px 0px 7px;
+  position: relative;
+  background-image: url(images/arrow-right.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+li.item span.dash.object-dash{
+  margin: 4px 5px 3px 5px;
+}
+li.item[error] > span.horiz-border{
+  border-color: rgb(223, 90, 90);
+}
+li.item[error] > span.key{
+  color: FIREBRICK;
+}
+li.item[error] > span.key span.dash,
+li.item[error] > span.dash:before{
+  background: rgb(223, 90, 90);
+  opacity: 1;
+}
+li.item[error] > span.key span.dash:before,
+li.item[error] > span.dash:before{
+  content: '';
+  position: absolute;
+  top: -2px;
+  background-image: url(images/error.png);
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 16px;
+  background-color: #FFF;
+}
+
+a{
+  color: #555;
+  cursor: default;
+}
+a:hover{
+  text-decoration: underline;
+}
+
+a.add-item{
+  position: relative;
+  background-image: url(images/plus.png);
+  background-position: 0px;
+  background-size: 200%;
+  background-repeat: no-repeat;
+  width: 12px;
+  height: 12px;
+  cursor: default;      
+}
+a.add-item-child{
+  position: absolute;
+  right: -10px;
+  top: 3px;
+}
+a.add-item-master{
+  float: left;
+  margin-top: 3px;
+}
+a.add-item:focus,
+a.add-item:hover{
+  background-position: -12px 0px;
+  outline: none;
+}
+a.add-item:after{
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 100px;
+}
+a.add-item:focus:after,
+a.add-item:hover:after{
+  content: 'add new item';
+  position: absolute;
+  font-size: 12px;
+  color: #72cbeb;
+  left: 6px;
+  width: 100px;
+  top: -1px;
+  padding-left: 10px;
+}
+span.key-value::selection, 
+span.value::selection{
+  background: #CDEEC7;
+}
+span.key-value[contenteditable],
+span.value[contenteditable]{
+  box-shadow:0px 2px #72CBEF;
+  outline: none;
+}
+span.key-value:empty,
+span.value:empty{
+  width: 80px;
+  height: 16px;
+  box-shadow:0px 2px lightgray;
+}
+span.key-value:focus:empty,
+span.value:focus:empty{
+  box-shadow:0px 2px #72CBEF;
+}
+span.key-value:not(:focus):empty:after,
+span.value:not(:focus):empty:after{
+  content: 'Empty Key';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 12px;
+  font-style: italic;
+  color: #CCC;
+}
+span.value:not(:focus):empty:after{
+  content: 'Empty Value';
+}
+
+span.key-value[contenteditable][error]{
+  box-shadow:0px 2px rgb(223, 90, 90);
+}
+span.key-value[disabled]{
+  color: #999;
+  cursor: default;
+}
+.bracket{
+  color: #868686;
+  padding-right: 10px;
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+.master-bracket{
+  float: left;
+  padding-right: 5px;
+}
+.bracket.obj:after{
+  padding-left: 4px;
+  content: '{';
+}
+.bracket.arr:after{
+  padding-left: 4px;
+  content: '[';
+}
+.bracket.bracket-close.obj:after{
+  padding-left: 0;
+  content: '}';
+}
+.bracket.bracket-close.master-bracket.obj:after{
+  padding-left: 6px;
+}
+.bracket.bracket-close.arr:after{
+  padding-left: 0;
+  content: ']';
+}
+a.new-item-option{
+  font-size: 14px;
+  cursor: default;
+  margin-right: 5px;
+  text-align: center;
+
+  background-size: 100%;
+  background-repeat: no-repeat;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  opacity: .5;
+}
+a.new-item-option:hover{
+  text-decoration: underline;
+  opacity: 1;
+}
+a.new-item-option:focus{
+  outline: none;
+  color: #72cbeb;
+  opacity: 1;
+}
+a.new-item-option.new-item-text{
+  background-image: url(images/text.png);
+}
+a.new-item-option.new-item-object{
+  background-image: url(images/obj-bracket.png);
+}
+a.new-item-option.new-item-array{
+  background-image: url(images/array-bracket.png);
+}
+div.controls{
+  position: absolute;
+  left: -40px;
+  width: 40px;
+  opacity: 0;
+}
+div.delete{
+  float: left;
+  font-size: 14px;
+  padding: 0px 3px;
+  cursor: default;
+  color: firebrick;
+  margin-top: 1px;
+  font-weight: 700;
+
+  background-image: url(images/x.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: 11px;
+  height: 11px;
+  margin-left: 2px;
+  padding: 0;
+  margin-top: 3px;
+}
+div.remove-type{
+  float: left;
+  width: 6px;
+  font-size: 14px;
+  padding: 0px 3px;
+  margin-top: 0px;
+  color: TOMATO;
+  cursor: default;
+  margin-left: 6px;
+  font-weight: 700;
+
+  background-image: url(images/back.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0;
+  margin-top: 0px;
+}
+div.delete:hover,
+div.remove-type:hover{
+  opacity: .7;
+}
+li.item > span.key:hover > div.controls{
+  opacity: 1;
+}
+ul.group li ul.empty{
+  padding: 0px 0px 0px 20px;
+  font-size: 12px;
+  color: #AAA;
+  font-style: italic;
+}

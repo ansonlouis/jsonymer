@@ -1,3 +1,6 @@
 /bower_components/
+/test/
+/node_modules/
 
+Gruntfile.js
 *.psd
