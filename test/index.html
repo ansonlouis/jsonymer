@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents.js"></script>
+
+    <link rel="import" href="../jsonymer-editor.html">
+
+  </head>
+
+  <body>
+    <div id="wrap">
+      <jsonymer-editor id="myJsonEditor"></jsonymer-editor> 
+    </div>
+
+    <div id="mocha"></div>
+
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script>mocha.setup({ui:'bdd'})</script>
+
+    <script src="events.js"></script>
+    <script src="dup-key.js"></script>
+    <script src="methods.js"></script>
+
+    <script>
+      if(window.mochaPhantomJS){ mochaPhantomJS.run(); }
+      else{ mocha.run(); }    
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
