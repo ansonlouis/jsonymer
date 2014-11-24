@@ -2,35 +2,35 @@
 
 Tests:
 
-√ all events
-  √ beforeItemAdded
-  √ itemAdded
-  √ beforeItemRemoved
-  √ itemRemoved
-  √ keyValueChanged
-  √ propertyValueChanged
-  √ beforeItemTypeRemoved
-  √ itemTypeRemoved
-  √ itemTypeChanged
-  √ edit
-  √ dirty
-  √ clean
+-√ all events
+  -√ beforeItemAdded
+  -√ itemAdded
+  -√ beforeItemRemoved
+  -√ itemRemoved
+  -√ keyValueChanged
+  -√ propertyValueChanged
+  -√ beforeItemTypeRemoved
+  -√ itemTypeRemoved
+  -√ itemTypeChanged
+  -√ edit
+  -√ dirty
+  -√ clean
 
 - all methods exposed in the DOCS
-  √ valueIsEndpoint
-  √ addItem
-  √ removeItem
-  √ setKeyValue
-  √ setPropertyValue
-  √ setItemType
-  √ removeType
-  √ removeChildren
-  √ getNextItem
-  √ getNextSibling
-  √ getParent
-  X getNextFocusableItem
-  - setError
-  - getError
+  -√ valueIsEndpoint
+  -√ addItem
+  -√ removeItem
+  -√ setKeyValue
+  -√ setPropertyValue
+  -√ setItemType
+  -√ removeType
+  -√ removeChildren
+  -√ getNextItem
+  -√ getNextSibling
+  -√ getParent
+  -X getNextFocusableItem
+  -√ setError
+  -√ getError
   - clearError
   - clearDescendingErrors
   - hasError

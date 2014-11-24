@@ -848,7 +848,11 @@
 
     setError : function(idx, errorID, str, data){
       
-      if(!this.errorsOn){ return; }
+      if(!this.errorsOn){ return false; }
+
+      if(!errorID){
+        throw new Error("No error ID given in setError on item " + idx);
+      }
 
       var item = this.getItem(idx);
 
@@ -879,7 +883,10 @@
         this.fire('dirty', {
           error : errObj,
           item : this.kArr[idx]
-        });        
+        });
+
+        return this;
+
       }
 
 

@@ -423,8 +423,79 @@ describe('Testing notable methods that are in the DOCS', function(){
   });
 
 
+  describe('setError', function(){
+
+    it('should set a single error', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, "errID", "this is an error");
+
+      var err = element.getItem(item.idx).error;
+      expect(err).to.be.ok();
+      expect(element.hasError(item.idx)).to.equal(err);
+      expect(err.errorID).to.equal('errID');
+
+    });
+
+    it('should set multiple errors', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, "errID_1", "this is an error 1");
+      element.setError(item.idx, "errID_2", "this is an error 2");
+
+      var err1 = element.getError(item.idx, "errID_1");
+      var err2 = element.getError(item.idx, "errID_2");
+
+      expect(err1).to.be.ok();
+      expect(err2).to.be.ok();
+
+      expect(element.getItem(item.idx).error).to.equal(err2);
+
+    });
+
+    it('should override an existing error with same ID', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, "err", "one");
+      element.setError(item.idx, "err", "override");
+
+      var err = element.getError(item.idx, "err");
+      expect(err.error).to.equal("override");
+
+    });
+
+    it('should throw error without error ID', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var fn = function(){ return element.setError(item.idx); };
+      expect(fn).to.throw(Error);
+    });
+
+
+  });
+  
 
   
+
+  describe('getError', function(){
+
+    it('should return specific error', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, 'err', 'this is an error');
+      var err = element.getError(item.idx, 'err');
+      expect(err).to.be.ok();
+      expect(err.errorID).to.equal('err');
+    });
+
+    it('should return all errors for item', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, 'err', 'this is an error');
+      element.setError(item.idx, 'err 2', 'this is an error');
+
+      var err = element.getError(item.idx);
+      expect(err).to.be.ok();
+      expect(err['err']).to.be.ok();
+      expect(err['err 2']).to.be.ok();
+      
+    });
+
+  });
 
 
 });
