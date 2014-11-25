@@ -492,10 +492,506 @@ describe('Testing notable methods that are in the DOCS', function(){
       expect(err).to.be.ok();
       expect(err['err']).to.be.ok();
       expect(err['err 2']).to.be.ok();
+
+    });
+
+  });
+
+
+
+
+
+
+  describe('clearError', function(){
+
+    it('should clear a single error from an item', function(){
+
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, 'err', 'this is an error');
+
+      var err = element.getError(item.idx, 'err');
+      expect(err).to.be.ok();
+
+      element.clearError(item.idx, 'err');
+      var err = element.getError(item.idx, 'err');
+      expect(err).to.not.be.ok();
+    });
+
+
+    it('should clear all errors for item', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, 'err', 'this is an error');
+      element.setError(item.idx, 'err 2', 'this is an error');
+
+      element.clearError(item.idx);
+
+      var err = element.getError(item.idx, 'err');
+      expect(err).to.not.be.ok();
+
+      var err2 = element.getError(item.idx, 'err 2');
+      expect(err2).to.not.be.ok();
+      
+    });
+
+    it('should clear one of two errors for item', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      element.setError(item.idx, 'err', 'this is an error');
+      element.setError(item.idx, 'err 2', 'this is an error');
+
+      element.clearError(item.idx, 'err');
+
+      var err = element.getError(item.idx);
+      expect(err).to.be.ok();
+
+      var err = element.hasError(item.idx);
+      expect(item.error).to.equal(err);
       
     });
 
   });
+
+
+
+
+
+  describe('clearDescendingErrors', function(){
+
+    it('should clear all errors in children but not itself', function(){
+      
+      var item = element.addItem(-1, 'key', {
+        "child 1" : "value",
+        "child 2" : [
+          "child 3"
+        ]
+      });
+
+      element.setError(item.idx, 'err', 'this is an error');
+
+      element.setError(2, 'err', 'this is an error');
+      element.setError(3, 'err', 'this is an error');
+      element.setError(4, 'err', 'this is an error');
+
+      expect(element.getError(item.idx)).to.be.ok();
+      expect(element.getError(2)).to.be.ok();
+      expect(element.getError(3)).to.be.ok();
+      expect(element.getError(4)).to.be.ok();
+
+      element.clearDescendingErrors(item.idx);
+
+      expect(element.getError(item.idx)).to.be.ok();
+      expect(element.getError(2)).to.equal(undefined);
+      expect(element.getError(3)).to.equal(undefined);
+      expect(element.getError(4)).to.equal(undefined);
+
+    });
+
+  });
+
+
+
+
+
+  describe('hasError', function(){
+
+    it('should return error when given an ID', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var err = element.setError(item.idx, 'err', 'this is an error');      
+
+      expect(element.hasError(item.idx)).to.equal(err);
+    });
+
+    it('should return all errors when not given an ID', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var err = element.setError(item.idx, 'err', 'this is an error');
+      var errToMatch = element.getError(item.idx);
+      expect(element.hasError()).to.equal(errToMatch);
+    });
+
+    it('should return false when all errors gone', function(){
+
+      var item = element.addItem(-1, 'key', 'value');
+      var err = element.setError(item.idx, 'err', 'this is an error');      
+      element.clearError(item.idx);
+
+      expect(element.hasError(item.idx)).to.equal(false);
+      expect(element.hasError()).to.equal(false);
+    });
+
+  });
+
+
+
+
+  describe('addChildItems', function(){
+
+
+    it('should add child items to object type', function(){
+      var item = element.addItem(-1, 'key', {"obj":"ect"});
+      var curLength = element.getItemLength();
+      element.addChildItems(item.idx, {"child" : "ren"});
+      expect(element.getItemLength()).to.equal(curLength + 1);
+      expect(item.value.length).to.equal(2);
+    });
+    it('should add child items to array type', function(){
+      var item = element.addItem(-1, 'key', ["array"]);
+      var curLength = element.getItemLength();
+      element.addChildItems(item.idx, ["child"]);
+      expect(element.getItemLength()).to.equal(curLength + 1);
+      expect(item.value.length).to.equal(2);
+    });
+
+
+    it('should overwrite child items to object type with the overwrite param', function(){
+      var item = element.addItem(-1, 'key', {"obj":"ect"});
+      var curLength = element.getItemLength();
+      element.addChildItems(item.idx, {"child" : "ren"}, true);
+      expect(element.getItemLength()).to.equal(curLength);
+      expect(item.value.length).to.equal(1);
+    });
+    it('should overwrite child items to array type with the overwrite param', function(){
+      var item = element.addItem(-1, 'key', ["array"]);
+      var curLength = element.getItemLength();
+      element.addChildItems(item.idx, ["child"], true);
+      expect(element.getItemLength()).to.equal(curLength);
+      expect(item.value.length).to.equal(1);
+    });
+
+
+    it('should not add child to string type', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var result = element.addChildItems(item.idx, ["children", "to", "add"]);
+      expect(element.getItemLength()).to.equal(2);
+      expect(result).to.equal(false);
+    });
+    it('should not add child to undefined type', function(){
+      var item = element.addItem(-1, 'key', undefined);
+      var result = element.addChildItems(item.idx, ["children", "to", "add"]);
+      expect(result).to.equal(false);
+      expect(element.getItemLength()).to.equal(2);
+    });
+
+
+    it('should not add array children to object type', function(){
+      var item = element.addItem(-1, 'key', {"obj":"ect"});
+      var curLength = element.getItemLength();
+      var result = element.addChildItems(item.idx, ["array"]);
+      expect(element.getItemLength()).to.equal(curLength);
+      expect(result).to.equal(false);     
+    });
+    it('should not add object children to array type', function(){
+      var item = element.addItem(-1, 'key', ["array"]);
+      var curLength = element.getItemLength();
+      var result = element.addChildItems(item.idx, {"obj" : "ect"});
+      expect(element.getItemLength()).to.equal(curLength);
+      expect(result).to.equal(false);
+    });
+
+
+  });
+
+
+
+
+  describe('createNewItem', function(){
+
+    it('should create a new string item to the root', function(){
+      var item = element.createNewItem(-1, 'key', 'value');
+      expect(item).to.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+    });
+    it('should create a new object item to the root', function(){
+      var item = element.createNewItem(-1, 'key', {});
+      expect(item).to.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+    });
+    it('should create a new array item to the root', function(){
+      var item = element.createNewItem(-1, 'key', []);
+      expect(item).to.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+    });
+
+
+    it('should create a new item to an item object', function(){
+      var item = element.createNewItem(-1, 'key', {});
+      var child = element.createNewItem(item.idx, 'key', 'value');
+      expect(child).to.be.ok();
+      expect(element.getItemLength()).to.equal(3);
+    });
+
+    it('should create a new item to an item array', function(){
+      var item = element.createNewItem(-1, 'key', []);
+      var child = element.createNewItem(item.idx, 'key', 'value');
+      expect(child).to.be.ok();
+      expect(element.getItemLength()).to.equal(3);
+    });
+
+    it('should not create a new item to a string', function(){
+      var item = element.createNewItem(-1, 'key', 'value');
+      var child = element.createNewItem(item.idx, 'key', 'value');
+      expect(child).to.not.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+    });
+
+    it('should not create a new item to a undefined item', function(){
+      var item = element.createNewItem(-1, 'key', undefined);
+      var child = element.createNewItem(item.idx, 'key', 'value');
+      expect(child).to.not.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+    });
+
+
+    it('should create an undefined item', function(){
+      var item = element.createNewItem(-1, 'key', undefined);
+      expect(item).to.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+      expect(item.type).to.equal(null);
+    });
+
+    it('should generate an item with a generic key when no key is given', function(){
+      var item = element.createNewItem(-1);
+      expect(item).to.be.ok();
+      expect(element.getItemLength()).to.equal(2);
+      expect(item.key).to.equal("key");
+    });
+
+    it('should not do anything when given bad ID', function(){
+      var item = element.createNewItem(1);
+      expect(item).to.equal(false);
+      expect(element.getItemLength()).to.equal(1);
+    });
+
+  });
+
+
+
+
+
+  describe('checkDuplicateKeys', function(){
+
+    it('should return false with one item', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var dups = element.checkDuplicateKeys(item.idx, 'key');
+      expect(dups).to.equal(false);
+    });
+
+    it('should return false with two items', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var item2 = element.addItem(-1, 'key 2', 'value');
+      var dups = element.checkDuplicateKeys(item2.idx, 'key 2');
+      expect(dups).to.equal(false);
+    });
+
+    it('should return true with two items', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var item2 = element.addItem(-1, 'key 2', 'value');
+      var dups = element.checkDuplicateKeys(item2.idx, 'key');
+      expect(dups).to.equal(item);
+    });
+
+    it('should return false when given the root idx', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var item2 = element.addItem(-1, 'key 2', 'value');
+      var dups = element.checkDuplicateKeys(-1, 'key');
+      expect(dups).to.equal(false);
+    });
+
+    it('should return false after dup is cleared', function(){
+      var item = element.addItem(-1, 'key', 'value');
+      var item2 = element.addItem(-1, 'key 2', 'value');
+      var dups = element.checkDuplicateKeys(item2.idx, 'key');
+      expect(dups).to.equal(item);
+
+      element.setKeyValue(item.idx, 'key 1');
+
+      var dups = element.checkDuplicateKeys(item2.idx, 'key');
+      expect(dups).to.equal(false);
+
+    });
+
+  });
+
+
+
+
+
+  describe('getAvailableKey', function(){
+
+    it('should return "key" when no siblings are present', function(){
+      var item = element.addItem(-1, 'not key', 'value');
+      var key = element.getAvailableKey(item.idx);
+      expect(key).to.equal('key');
+    });
+
+
+    it('should return "key" when no siblings have "key" as its key', function(){
+      var item = element.addItem(-1, 'not key', 'value');
+      var item = element.addItem(-1, 'not key 2', 'value');
+      var key = element.getAvailableKey(item.idx);
+      expect(key).to.equal('key');
+    });
+
+    it('should return "key (1)" when a sibling has "key" as its key', function(){
+      var item = element.addItem(-1, 'not key', 'value');
+      var item2 = element.addItem(-1, 'key', 'value');
+      var key = element.getAvailableKey(item.idx);
+      expect(key).to.equal('key (1)');
+    });
+
+    it('should return "key (2)" when "key" and "key (1)" are taken', function(){
+      var item = element.addItem(-1);
+      var item2 = element.addItem(-1);
+      var key = element.getAvailableKey(item2.idx);
+      expect(key).to.equal('key (2)');
+    });
+
+    it('should skip "key (1)" when its already taken', function(){
+      var item = element.addItem(-1, 'not key');
+      var item2 = element.addItem(-1, 'key (1)');
+      var item3 = element.addItem(-1, 'hey now');
+
+      var key = element.getAvailableKey(item.idx);
+      expect(key).to.equal('key');
+      element.setKeyValue(item.idx, key);
+
+      var key = element.getAvailableKey(item3.idx);
+      expect(key).to.equal('key (2)');
+
+    });
+
+  });
+
+
+
+  describe('isItemChildOfArray', function(){
+
+    it('should return true when item is child of array', function(){
+      var item = element.addItem(-1, 'key', []);
+      var child = element.addItem(item.idx, 'key', 'value');
+
+      var itemOfArray = element.isItemChildOfArray(child.idx);
+      expect(itemOfArray).to.equal(true);
+
+    });
+
+    it('should return false when item is child of object', function(){
+      var item = element.addItem(-1, 'key', {});
+      var child = element.addItem(item.idx, 'key', 'value');
+
+      var itemOfArray = element.isItemChildOfArray(child.idx);
+      expect(itemOfArray).to.equal(false);
+
+    });
+
+  });
+
+
+
+
+  describe('toJSON', function(){
+
+    it('should return an empty object', function(){
+      var result = element.toJSON();
+      expect(result).to.be.an('object');
+      expect(result).to.be.empty();
+    });
+
+    it('should return an equivalent object', function(done){
+      var obj = {"hey" : "now"};
+      element.obj = obj;
+      setTimeout(function(){
+        var result = element.toJSON();
+        expect(result).to.be.an('object');
+        expect(result).to.contain(obj);
+        done();
+      },0);
+    });
+
+
+    it('should keep types as they are when possible with the first "true" argument', function(done){
+      var obj = {
+        "hey" : "now",
+        "int" : 1,
+        "null" : null,
+        "false" : false,
+        "true" : true,
+        "empty" : ""
+      };
+      element.obj = obj;
+      setTimeout(function(){
+        var result = element.toJSON(true);
+        expect(result).to.be.an('object');
+        expect(result).to.contain(obj);
+        done();
+      },0);      
+    });
+
+    it('should return object properties as strings regardless of type without first "true" argument', function(done){
+
+      var obj = {
+        "hey" : "now",
+        "int" : 1,
+        "null" : null,
+        "false" : false,
+        "true" : true,
+        "empty" : ""
+      };
+
+      var returnValue = {
+        "hey" : "now",
+        "int" : "1",
+        "null" : "null",
+        "false" : "false",
+        "true" : "true",
+        "empty" : ""
+      };
+      element.obj = obj;
+      setTimeout(function(){
+        var result = element.toJSON();
+        expect(result).to.be.an('object');
+        expect(result).to.contain(returnValue);
+        done();
+      },0);      
+    });
+
+
+    it('should return undefined values with the second "true" argument', function(done){
+      
+      var obj = {
+        "hey" : "now",
+        "undefinedProp" : undefined
+      };
+
+      element.obj = obj;
+      setTimeout(function(){
+        var result = element.toJSON(true, true);
+        expect(result).to.be.an('object');
+        expect(result).to.contain.keys('undefinedProp');
+        expect(result.undefinedProp).to.be.undefined();
+        done();
+      },0);
+    });
+
+
+    it('should not return undefined values without the second argument', function(done){
+      
+      var obj = {
+        "hey" : "now",
+        "undefinedProp" : undefined
+      };
+
+      element.obj = obj;
+      setTimeout(function(){
+        var result = element.toJSON();
+        expect(result).to.be.an('object');
+        expect(result).to.contain({"hey" : "now"});
+        done();
+      },0);
+    });
+
+
+  });
+
+
 
 
 });

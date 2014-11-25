@@ -31,23 +31,23 @@ Tests:
   -X getNextFocusableItem
   -√ setError
   -√ getError
-  - clearError
-  - clearDescendingErrors
-  - hasError
-  - addChildItems
-  - createNewItem
-  - checkDuplicateKeys
-  - getAvailableKey
-  - isItemChildOfArray
+  -√ clearError
+  -√ clearDescendingErrors
+  -√ hasError
+  -√ addChildItems
+  -√ createNewItem
+  -√ checkDuplicateKeys
+  -√ getAvailableKey
+  -√ isItemChildOfArray
+  - toJSON
 
 
 
 
-
-- adding/removing/editing items
-- dup key error and removal
 - making types correct
 - add event detail assertions to events
+- errorsOn
+
 
 TODO: 
-- look into what we should do with addItem() when passing falsy key value
+- look into what we should do with addItem() when passing falsy key value (as well as createNewItem())

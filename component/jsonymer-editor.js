@@ -135,7 +135,7 @@
           fn(collection[i], i);
         }
       }
-      else{
+      else if(typeof(collection) === "object"){
         for(var i in collection){
           fn(collection[i], i);
         }
@@ -174,6 +174,13 @@
       return item.idx === -1;
     },
 
+    itemCanHaveChildren : function(idx){
+      var item = this.getItem(idx);
+      if(item){
+        return item.type === "array" || item.type === "object";
+      }
+      return false;
+    },
 
     /*
     *
@@ -885,7 +892,7 @@
           item : this.kArr[idx]
         });
 
-        return this;
+        return errObj;
 
       }
 
@@ -893,7 +900,12 @@
     },
 
     getError : function(idx, errorID){
-      return errorID ? this.errors[idx][errorID] : this.errors[idx];
+      if(errorID && this.errors[idx]){
+        return this.errors[idx][errorID];
+      }
+      else{
+        return this.errors[idx];
+      }
     },
 
 
@@ -912,7 +924,9 @@
           delete this.errors[idx];
         }
 
-        if(!this.hasError(idx)){
+        var currentError = this.hasError(idx);
+
+        if(!currentError){
 
           // this.async(function(){
           //   var $item = this.getDomItem(idx);
@@ -929,6 +943,10 @@
 
         }
 
+        else{
+          item.error = currentError;
+        }
+
       }
 
     },
@@ -941,14 +959,14 @@
 
       if(!this.errorsOn){ return; }
 
-      var obj = this.kArr[idx];
+      var item = this.getItem(idx);
+      var _this = this;
 
-      if(obj.value instanceof Array){
-        for(var i=0; i<obj.value.length; i++){
-          this.clearDescendingErrors(obj.value[i].idx);
-        }
-      }else{
-        this.clearError(idx);
+      if(item){
+        this.forEachChild(item.value, function(child){
+          _this.clearDescendingErrors(child.idx);
+          _this.clearError(child.idx);
+        });        
       }
 
     },
@@ -1114,21 +1132,45 @@
 
 
     addChildItems : function(parentIdx, children, overwrite){
+
       var parent = this.getItem(parentIdx);
       var _this = this;
-      if(parent){
 
-        if(overwrite){
-          this.removeChildren(parent.idx);
+      if(parent && this.itemCanHaveChildren(parentIdx)){
+
+
+        if(!this.valueIsEndpoint(children)){
+
+          // if the children dont match what the item type is
+          if( 
+            (children instanceof Array && parent.type === "object") ||
+            (!(children instanceof Array) && parent.type === "array")
+          ){
+            return false;
+          }
+
+
+          if(overwrite){
+            this.removeChildren(parent.idx);
+          }
+
+          this.forEachChild(children, function(child, key){
+            _this.createNewItem(parent.idx, key, child);
+          });
+
+          return parent;
+
         }
 
-        this.forEachChild(children, function(child, key){
-          _this.createNewItem(parent.idx, key, child);
-        });
       }
+
+      return false;
+
     },
 
-
+    // similar to "addItem()", except this method does not fire events
+    // nor send anything into edit mode. "addItem()" in fact calls this method itself
+    // to execute the actual creation of the item
     createNewItem : function(parentIdx, key, value){
 
       var parent = this.getItem(parentIdx);
@@ -1261,23 +1303,13 @@
     // @param: value - the key value to compare with
     // @return: true, if duplicate is FOUND
     checkDuplicateKeys : function(idx, value){
-      var item = this.kArr[idx];
-      var parent = item.parent;
-      var children = null;
 
-      // if no parent is found, consider the compiled object the parent,
-      // as well as the children
-      if(!parent){
-        parent = this.cObj;
-        children = parent;
-      }
-      // otherwise, the children to compare with are the children of the item's parent
-      else{
-        children = parent.value;
-      }
+      var item = this.getItem(idx);
+      var parent = item.parent;
 
       // loop through children and check if any keys match, return true if so
       if(parent){
+        var children = parent.value;
         for(var i=0; i<children.length; i++){
           var sib = children[i];
           if(sib.idx !== item.idx && sib.key === value){
@@ -1307,7 +1339,7 @@
       var prefix = "key";
       var key = prefix;
 
-      var obj = this.kArr[idx];
+      var obj = this.getItem(idx);
 
       // start with 1 as the incrementer
       // var i = ++obj.parent.childKeyIdx;
@@ -1349,7 +1381,7 @@
     // we need to do certain things for direct array children
     // @param: idx - the id of the child item
     isItemChildOfArray : function(idx){
-      var obj = this.kArr[idx];
+      var obj = this.getItem(idx);
       return obj && obj.parent && obj.parent.type === "array";
     },
 
