@@ -2,6 +2,7 @@
 
 // var expect = require('chai').expect;
 
+var chai = (chai || require('chai'));
 var expect = chai.expect;
 var element = document.getElementById('myJsonEditor');
 
@@ -42,59 +43,59 @@ describe('Testing duplicate key error', function(){
   afterEach(cleanup);
 
   var keyName = "dupKey";
-  var parentIdx = -1;
+  var parentid = -1;
 
 
   it("should not give a duplicate key error", function(){
-    var first = element.addItem(parentIdx, keyName, 'myValue');
-    expect(element.hasError(first.idx)).to.not.be.ok();
+    var first = element.addItem(parentid, keyName, 'myValue');
+    expect(element.hasError(first.id)).to.not.be.ok();
   });
 
 
   it("should give a duplicate key error on the top level parent for two items", function(){
 
-    var first = element.addItem(parentIdx, keyName, 'myValue');
-    var second = element.addItem(parentIdx, keyName, 'myValue');
+    var first = element.addItem(parentid, keyName, 'myValue');
+    var second = element.addItem(parentid, keyName, 'myValue');
 
-    expect(element.hasError(first.idx)).to.be.ok();
-    expect(element.hasError(first.idx).errorID).to.equal("_dup");
+    expect(element.hasError(first.id)).to.be.ok();
+    expect(element.hasError(first.id).errorID).to.equal("_dup");
 
-    expect(element.hasError(second.idx)).to.be.ok();
-    expect(element.hasError(second.idx).errorID).to.equal("_dup");
+    expect(element.hasError(second.id)).to.be.ok();
+    expect(element.hasError(second.id).errorID).to.equal("_dup");
 
   });
 
 
   it("should give a duplicate key error on the top level parent for three items", function(){
 
-    var first = element.addItem(parentIdx, keyName, 'myValue');
-    var second = element.addItem(parentIdx, keyName, 'myValue');
-    var third = element.addItem(parentIdx, keyName, 'myValue');
+    var first = element.addItem(parentid, keyName, 'myValue');
+    var second = element.addItem(parentid, keyName, 'myValue');
+    var third = element.addItem(parentid, keyName, 'myValue');
 
-    expect(element.hasError(first.idx)).to.be.ok();
-    expect(element.hasError(first.idx).errorID).to.equal("_dup");
-    expect(element.hasError(second.idx)).to.be.ok();
-    expect(element.hasError(second.idx).errorID).to.equal("_dup");
-    expect(element.hasError(third.idx)).to.be.ok();
-    expect(element.hasError(third.idx).errorID).to.equal("_dup");
+    expect(element.hasError(first.id)).to.be.ok();
+    expect(element.hasError(first.id).errorID).to.equal("_dup");
+    expect(element.hasError(second.id)).to.be.ok();
+    expect(element.hasError(second.id).errorID).to.equal("_dup");
+    expect(element.hasError(third.id)).to.be.ok();
+    expect(element.hasError(third.id).errorID).to.equal("_dup");
 
   });
 
 
   it("should clear the error for both items", function(){
 
-    var first = element.addItem(parentIdx, keyName, 'myValue');
-    var second = element.addItem(parentIdx, keyName, 'myValue');
+    var first = element.addItem(parentid, keyName, 'myValue');
+    var second = element.addItem(parentid, keyName, 'myValue');
 
-    expect(element.hasError(first.idx)).to.be.ok();
-    expect(element.hasError(first.idx).errorID).to.equal("_dup");
-    expect(element.hasError(second.idx)).to.be.ok();
-    expect(element.hasError(second.idx).errorID).to.equal("_dup");
+    expect(element.hasError(first.id)).to.be.ok();
+    expect(element.hasError(first.id).errorID).to.equal("_dup");
+    expect(element.hasError(second.id)).to.be.ok();
+    expect(element.hasError(second.id).errorID).to.equal("_dup");
 
-    element.setKeyValue(second.idx, keyName + " (1)");
+    element.setKeyValue(second.id, keyName + " (1)");
 
-    expect(element.hasError(first.idx)).to.not.be.ok();
-    expect(element.hasError(second.idx)).to.not.be.ok();
+    expect(element.hasError(first.id)).to.not.be.ok();
+    expect(element.hasError(second.id)).to.not.be.ok();
 
 
   });
@@ -103,23 +104,23 @@ describe('Testing duplicate key error', function(){
 
   it("should clear the error for one of three items, and then the rest", function(){
 
-    var first = element.addItem(parentIdx, keyName, 'myValue');
-    var second = element.addItem(parentIdx, keyName, 'myValue');
-    var third = element.addItem(parentIdx, keyName, 'myValue');
+    var first = element.addItem(parentid, keyName, 'myValue');
+    var second = element.addItem(parentid, keyName, 'myValue');
+    var third = element.addItem(parentid, keyName, 'myValue');
 
-    element.setKeyValue(second.idx, keyName + " (1)");
+    element.setKeyValue(second.id, keyName + " (1)");
 
-    expect(element.hasError(first.idx)).to.be.ok();
-    expect(element.hasError(first.idx).errorID).to.equal("_dup");
+    expect(element.hasError(first.id)).to.be.ok();
+    expect(element.hasError(first.id).errorID).to.equal("_dup");
 
-    expect(element.hasError(second.idx)).to.not.be.ok();
+    expect(element.hasError(second.id)).to.not.be.ok();
     
-    expect(element.hasError(third.idx)).to.be.ok();
-    expect(element.hasError(third.idx).errorID).to.equal("_dup");
+    expect(element.hasError(third.id)).to.be.ok();
+    expect(element.hasError(third.id).errorID).to.equal("_dup");
 
-    element.setKeyValue(first.idx, keyName + " (2)");
-    expect(element.hasError(first.idx)).to.not.be.ok();
-    expect(element.hasError(third.idx)).to.not.be.ok();
+    element.setKeyValue(first.id, keyName + " (2)");
+    expect(element.hasError(first.id)).to.not.be.ok();
+    expect(element.hasError(third.id)).to.not.be.ok();
 
   });
 
@@ -127,16 +128,16 @@ describe('Testing duplicate key error', function(){
 
   it("should clear the error after item removal", function(){
 
-    var first = element.addItem(parentIdx, keyName, 'myValue', false);
-    var second = element.addItem(parentIdx, keyName, 'myValue', false);
+    var first = element.addItem(parentid, keyName, 'myValue', false);
+    var second = element.addItem(parentid, keyName, 'myValue', false);
 
-    expect(element.hasError(first.idx)).to.be.ok();
-    expect(element.hasError(first.idx).errorID).to.equal("_dup");    
-    expect(element.hasError(second.idx)).to.be.ok();
-    expect(element.hasError(second.idx).errorID).to.equal("_dup");
+    expect(element.hasError(first.id)).to.be.ok();
+    expect(element.hasError(first.id).errorID).to.equal("_dup");    
+    expect(element.hasError(second.id)).to.be.ok();
+    expect(element.hasError(second.id).errorID).to.equal("_dup");
 
     element.removeItem(2);
-    expect(element.hasError(first.idx)).to.not.be.ok();
+    expect(element.hasError(first.id)).to.not.be.ok();
 
   });
 

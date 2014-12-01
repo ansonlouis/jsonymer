@@ -1,5 +1,4 @@
-<!-- <link rel="import" href="../polymer/polymer.html"> -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="<%= bower_root %>/polymer/polymer.html">
 
 
 <polymer-element name="jsonymer-editor" attributes="obj">
@@ -12,7 +11,7 @@
 
       <div class="cf">
         <span class="bracket obj master-bracket"></span>
-        <a id="add-item-start" data-idx="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+        <a id="add-item-start" data-id="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
       </div>
 
       <template if="{{cObj}}">
@@ -24,7 +23,7 @@
 
               <!-- each individual item will be one of these: li.item -->
               <li 
-              id="item-{{item.idx}}" 
+              id="item-{{item.id}}" 
               class="item cf" 
               locked?="{{item.locked}}"
               error?="{{item.error}}"
@@ -41,15 +40,15 @@
                 <span class="key">
 
                   <div class="controls cf">
-                    <div class="delete" data-idx="{{item.idx}}" on-click="{{removeItem}}" title="Remove Item"></div>
+                    <div class="delete" data-id="{{item.id}}" on-click="{{removeItem}}" title="Remove Item"></div>
                     <template if="{{item.type}}">
-                      <div data-idx="{{item.idx}}" class="remove-type" on-click="{{removeType}}" title="Reset Item Type"></div>
+                      <div data-id="{{item.id}}" class="remove-type" on-click="{{removeValue}}" title="Remove Item Value"></div>
                     </template>
                   </div>
                   
 
                   <span 
-                  data-idx="{{item.idx}}" 
+                  data-id="{{item.id}}" 
                   class="key-value" 
                   contenteditable?="{{item.editmode}}"
                   on-focus="{{doFocus}}" 
@@ -65,16 +64,16 @@
                   <template if="{{item.value | isArray}}">
                     <span class="dash object-dash"></span>
                     <span class="bracket {{item.type=='object'?'obj':'arr'}}"></span>
-                    <a data-idx="{{item.idx}}" class="add-item add-item-child noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+                    <a data-id="{{item.id}}" class="add-item add-item-child noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
                   </template>
                 </span>
 
                 
                 <template if="{{!item.type}}">
                   <span class="dash"></span>
-                  <a class="new-item-option new-item-text noselect" data-idx="{{item.idx}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property a string"></a>
-                  <a class="new-item-option new-item-object noselect" data-idx="{{item.idx}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an object"></a>
-                  <a class="new-item-option new-item-array noselect" data-idx="{{item.idx}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an array"></a>
+                  <a class="new-item-option new-item-text noselect" data-id="{{item.id}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property a string"></a>
+                  <a class="new-item-option new-item-object noselect" data-id="{{item.id}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an object"></a>
+                  <a class="new-item-option new-item-array noselect" data-id="{{item.id}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an array"></a>
                 </template>
 
                 <template if="{{item.type}}">
@@ -84,7 +83,7 @@
                     <span class="dash"></span>
 
                     <span 
-                    data-idx="{{item.idx}}" 
+                    data-id="{{item.id}}" 
                     class="value" 
                     contenteditable?="{{item.editmode}}" 
                     on-focus="{{doFocus}}" 
@@ -97,13 +96,13 @@
 
                   <template if="{{item.value | isArray}}">
 
-                    <template if="{{kArr[item.idx].value.length}}">
+                    <template if="{{kArr[item.id].value.length}}">
                       <ul class="group cf deep">
-                        <template ref="loop_root" repeat="{{item in kArr[item.idx].value}}"></template>
+                        <template ref="loop_root" repeat="{{item in kArr[item.id].value}}"></template>
                       </ul>
                     </template>
 
-                    <template if="{{!kArr[item.idx].value.length}}">
+                    <template if="{{!kArr[item.id].value.length}}">
                       <ul class="group empty cf deep">
                         <li class="item">This item is empty</li>
                       </ul>
@@ -123,7 +122,7 @@
 
           <div class="cf">
             <span class="bracket bracket-close obj master-bracket"></span>
-            <a id="add-item-end" data-idx="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+            <a id="add-item-end" data-id="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
           </div>
           
 

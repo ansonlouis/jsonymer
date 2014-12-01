@@ -2,7 +2,7 @@
 
 // var expect = require('chai').expect;
 
-var expect = chai.expect;
+var expect = (chai || require('chai')).expect;
 var element = document.getElementById('myJsonEditor');
 
 
@@ -218,7 +218,7 @@ describe('Testing Listenable Events', function(){
       event.preventDefault();
     }, true);
 
-    element.removeType(1);
+    element.removeValue(1);
     expect(item.type).to.not.equal(null);
 
   });
@@ -236,7 +236,7 @@ describe('Testing Listenable Events', function(){
     expectEditEvent(_itemTypeRemoved, done);
 
 
-    element.removeType(1, true);
+    element.removeValue(1, true);
 
   });
 
