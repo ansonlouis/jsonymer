@@ -1,0 +1,12 @@
+<div class="event">
+  <a target="{{event.name}}"></a>
+  <h3>{{event.name}}</h3>
+  <p><markdown-element>{{event.description}}</markdown-element></p>
+  <div class="detail" ng-if="event.parameters.length">
+    <h4>event.detail</h4>
+    <div class="cf" ng-repeat="param in event.parameters">
+      <span>{{param.name}}</span>
+      <p><markdown-element>{{param.description}}</markdown-element></p>
+    </div>
+  </div>
+</div>

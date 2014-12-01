@@ -1,0 +1,704 @@
+{
+    "events": [
+        {
+            "name": "beforeItemAdded",
+            "access": "",
+            "virtual": false,
+            "description": "Fires right before an item is added to the JSON structure. Using `event.preventDefault()` will cause the item to not be added.",
+            "parameters": [
+                {
+                    "name": "parent",
+                    "type": "object",
+                    "description": "the parent item object that the new item will be added to",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "itemAdded",
+            "access": "",
+            "virtual": false,
+            "description": "Fires after an item has been added to the JSON structure.",
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the new item object added to the JSON structure",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "beforeItemRemoved",
+            "access": "",
+            "virtual": false,
+            "description": "Fires right before an item is removed from the JSON structure. Using `event.preventDefault()` will cause the item to not be removed.",
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object that will be removed",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "itemRemoved",
+            "access": "",
+            "virtual": false,
+            "description": "Fires after an item has been removed from the JSON structure.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "int",
+                    "description": "the index ID of the item that was removed",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "parent",
+                    "type": "object",
+                    "description": "the parent item object of the item that was removed",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "keyValueChanged",
+            "access": "",
+            "virtual": false,
+            "description": "Fires after a item's _key_ has been changed. *Note:* this event fires on every keystroke in the key input element. It will also fire when `setKeyValue()` is called with the `fireEvent` parameter set to true.",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "the value of the key input box",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "element",
+                    "type": "element",
+                    "description": "the HTML element used for user input",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object for the `key : value` pair",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "propertyValueChanged",
+            "access": "",
+            "virtual": false,
+            "description": "Fires after a item's _property_ has been changed. *Note:* this event fires on every keystroke in the property input element if the item is a _string type_. It will also fire when `setPropertyValue()` is called with the `fireEvent` parameter set to true.",
+            "parameters": [
+                {
+                    "name": "value",
+                    "type": "string",
+                    "description": "the value of the value input box",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "element",
+                    "type": "element",
+                    "description": "the HTML element used for user input",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object for the `key : value` pair",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "beforeItemtypeRemoved",
+            "access": "",
+            "virtual": false,
+            "description": "Fires right before an item's _type_ has been removed (eg. the item goes back to an undetermined state). Using `event.preventDefault()` will cause the item type to not be removed.",
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object that will lose its type",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "itemTypeRemoved",
+            "access": "",
+            "virtual": false,
+            "description": "Fires after an item's _type_ has been removed.",
+            "parameters": [
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object that lost it's type",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "edit",
+            "access": "",
+            "virtual": false,
+            "description": "Fires any time the JSON structure has been edited. This makes it possible to trace many of the element's events with one callback. The edit event fires in conjunction with the `itemAdded`, `itemRemoved`, `keyValueChanged`, `propertyValueChanged`, and `itemTypeRemoved` events. The edit event detail will be the same object as documented for each of these corresponding events (depending on what type of edit occurred), along with an additional property of `editType`.",
+            "parameters": [
+                {
+                    "name": "editType",
+                    "type": "string",
+                    "description": "the type of edit that occurred, in the form of the name of the corresponding event",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "dirty",
+            "access": "",
+            "virtual": false,
+            "description": "Fires when an error occurs within the JSON structure.",
+            "parameters": [
+                {
+                    "name": "error",
+                    "type": "object",
+                    "description": "the internal error object created for the error, as specified in the _dealing with errors section_",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "item",
+                    "type": "object",
+                    "description": "the item object for the item that the error occurred on",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": []
+        },
+        {
+            "name": "clean",
+            "access": "",
+            "virtual": false,
+            "description": "Fires once the JSON structure is void of any errors. No relevant `event.detail` is provided for this event.",
+            "parameters": [],
+            "examples": []
+        }
+    ],
+    "functions": [
+        {
+            "name": "addItem",
+            "access": "",
+            "virtual": false,
+            "description": "Adds a new item into the passed _parentId_ item. If the item should be added to the top level, pass `-1` for the parentId. This method is also used by the editor template as well, so any events dealing with items being added will fire `beforeItemAdded`, `itemAdded`, and `edit`. If you want to circumvent this behavior, use `createNewItem()` instead.",
+            "parameters": [
+                {
+                    "name": "parentId",
+                    "type": "",
+                    "description": "The id of the parent that the new item will be added to.",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "key",
+                    "type": "",
+                    "description": "The key for the new item. Passing any falsey value (besides _0_) will result in a generated key. If a key is passed that already exists in some sibling, duplicate key errors will be set.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "",
+                    "description": "The value for the new item. If a string or falsey value is passed, it will be converted to a string representation. If an object or array is passed, those items will automatically be generated into the editor as children. If `undefined` is passed, the new item will have an undetermined type.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "editMode",
+                    "type": "",
+                    "description": "Set to true to send the new item's key into edit mode (focus).",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "The new item object that was added to the editor or `false` if some error."
+            }
+        },
+        {
+            "name": "removeItem",
+            "access": "",
+            "virtual": false,
+            "description": "Removes an item from the editor. This will also remove any children the item might have, remove any errors placed on these children, as well as resolve any duplicate key errors that were placed on the item itself. The events `beforeItemRemoved` and `itemRemoved` will both fire when this method is called.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item to remove",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "boolean",
+                "description": "Returns `true` if the item was removed, `false` if an error occured."
+            }
+        },
+        {
+            "name": "setKeyValue",
+            "access": "",
+            "virtual": false,
+            "description": "Changes the key value for the corresponding item. If no key is passed, one will be generated and used instead. If the new key matches that of a sibling, duplicate key errors will be set. If the item is an _Array Item_, this method will fail, as those keys must be ordered and uneditable.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item that will get the new key",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "newKey",
+                    "type": "",
+                    "description": "The new key value, as a string or number. False values (besides _0_) will result in a generated key.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "fireEvents",
+                    "type": "",
+                    "description": "Set to true to ensure that the `keyValueChanged` and `edit` events are fired.",
+                    "default": "false",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "boolean",
+                "description": "Returns `true` if the item the key was changed, `false` if an error occured."
+            }
+        },
+        {
+            "name": "setPropertyValue",
+            "access": "",
+            "virtual": false,
+            "description": "Changes the property value for the corresponding item. If the passed item is some _endpoint value_ (string, number, falsey value besides _undefined_) then the value will become the string representation of that value. If that's the case, and the item is of an array or object type, any children attached to those will be removed and the item type will change to string. If the property value is an object or array, any children in that value will be added to the editor.\n\n     If the call to `setPropertyValue` causes the item's type to change, and the `fireEvents` argument is true, the `itemTypeChanged`, `propertyValueChanged`, and `edit` events will all fire. If the item's type did not change, only the `propertyValueChanged` and `edit` events will fire. Note that in the first case, several edit events may fire.\n\n     If the passed value is `undefined`, the item type and its children will be removed and the type will become _undetermined_.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item that will get the new value",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "newValue",
+                    "type": "",
+                    "description": "The new value for the item. Arrays and Objects will turn the item into Array or Object types. String / Number or falsey values will become strings. Undefined value will cause the item type to be _undetermined_.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "fireEvents",
+                    "type": "",
+                    "description": "Set to true to ensure that all resulting events will fire. These events will be `itemTypeChanged`, `propertyValueChanged`, and `edit` if the items type changed. Otherwise, just `propertyValueChanged` and `edit` will fire.",
+                    "default": "false",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "boolean",
+                "description": "Returns `true` if the item value was changed, `false` if an error occured."
+            }
+        },
+        {
+            "name": "removeValue",
+            "access": "",
+            "virtual": false,
+            "description": "Removes the value and type of the corresponding item. If the item has children, those items will be removed along with any errors attached to those items.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item that will lose it's value",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "fireEvent",
+                    "type": "",
+                    "description": "Set to true to ensure that the `beforeItemTypeRemoved`, `itemTypeRemoved`, and `edit` events are fired.",
+                    "default": "false",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "boolean",
+                "description": "Return `true` if the item's value was removed, `false` if an error occured."
+            }
+        },
+        {
+            "name": "getNextItem",
+            "access": "",
+            "virtual": false,
+            "description": "Returns the next item in the JSON heirarchy. This item could be the _first child_ of the item, if it has children, or the _next possible sibling_. This sibling could be a direct sibling of the item, or possibly a sibling of some ancestor of the item. Visually, this will return the next item immediately below the item that was passed.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "Returns the next adjacent item, or `null` if no item was found or the bottom of the data structure was hit."
+            }
+        },
+        {
+            "name": "getNextSibling",
+            "access": "",
+            "virtual": false,
+            "description": "Returns the next immediate sibling below the item, or `null` or no sibling is found.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "Returns the next sibling, or `null` if no sibling was found."
+            }
+        },
+        {
+            "name": "getParent",
+            "access": "",
+            "virtual": false,
+            "description": "Returns the parent of the item, or `null` if the item is the top level.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "Returns the parent of the item, or `null` if the item is the top level."
+            }
+        },
+        {
+            "name": "setError",
+            "access": "",
+            "virtual": false,
+            "description": "This sets an error on a specific object item, making the key of the item a red color, along with an exclaimation mark icon set in between the key and value (these styles can obviously be changed by _you_). The optional `errorStr` argument will show up as a native tooltip as the user hovers over the item. The error will then be stored on the `jsonymerInstance.errors` property, in the format:\n```javascript\nerrors : {\n  \"<item-id>\" : {\n    \"<error-id>\" : {\n      \"error\" : \"<error-string>\",\n      \"data\" : \"<error-data>\"\n    },\n    \"<error-id-2>\" : { ... }\n  },\n  \"<item-id-2>\" : { ... }\n}\n```\n*Note*: This method does nothing if you set `jsonymerInstance.errorsOn = false`.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The index ID of the item the error should be set on",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "errorId",
+                    "type": "",
+                    "description": "A unique error ID (generated by you) that you can use to identify the error. This allows you to have multiple errors on a single item, as well as cherry-pick a specific error to remove when needed.\n\n*Note*: the errorId `_dup` is currently used internally for duplicate key errors, so using that as an errorId may be problematic.",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "errorStr",
+                    "type": "",
+                    "description": "The public facing error string you'd like the user to see when hovering over the item.",
+                    "default": "''",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "data",
+                    "type": "",
+                    "description": "Any additional data you need for the error for possible future use when clearing the error",
+                    "default": "null",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "The error object that was created for the error, or `false` if no error was created."
+            }
+        },
+        {
+            "name": "getError",
+            "access": "",
+            "virtual": false,
+            "description": "This returns the specific error object with the passed error ID, on the specific item with the passed item ID. If no error id is passed, all errors found on the item with passed item id will be returned. If no item id is passed, the entire error object is returned.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The ID of the item that has the error you need",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "errorId",
+                    "type": "",
+                    "description": "The error ID that was given when the error was first created",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "- The specific error object / All errors for the item / All errors in the entire data structure"
+            }
+        },
+        {
+            "name": "clearError",
+            "access": "",
+            "virtual": false,
+            "description": "Clears the error attached to the given item ID with the given error ID. If no error ID is given, all errors attached to the item will be removed.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The ID of the item that has the error you need to remove",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "errorId",
+                    "type": "",
+                    "description": "The unique error ID (you created yourself) that was given when the error was first created. If not present, all errors for the item will be cleared",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "boolean",
+                "description": "`true` if the error was cleared, `false` if it was not because of some error or if it did not exist."
+            }
+        },
+        {
+            "name": "hasError",
+            "access": "",
+            "virtual": false,
+            "description": "Returns true or false based on whether the specified item (or whole object) has an error or not. If you pass an item ID, the method will return a value based on the _validity_ of that item only. If you do not pass an item ID, the method will return based on the validity of the whole object in total, returning true if any error is found, and false if no errors.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "the item ID that you'd like to check for errors on.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "",
+                "description": "The first error found matching the passed arguments or `false`"
+            }
+        },
+        {
+            "name": "createNewItem",
+            "access": "",
+            "virtual": false,
+            "description": "Identical to `addItem()`, although without the overhead of firing events and putting anything into edit mode.",
+            "parameters": [
+                {
+                    "name": "parentId",
+                    "type": "",
+                    "description": "The id of the parent that the new item will be added to.",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "key",
+                    "type": "",
+                    "description": "The key for the new item. Passing any falsey value (besides _0_) will result in a generated key. If a key is passed that already exists in some sibling, duplicate key errors will be set.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "value",
+                    "type": "",
+                    "description": "The value for the new item. If a string or falsey value is passed, it will be converted to a string representation. If an object or array is passed, those items will automatically be generated into the editor as children. If `undefined` is passed, the new item will have an _undetermined type_.",
+                    "default": "",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "Returns the new item that was created or `false` if an error occured."
+            }
+        },
+        {
+            "name": "checkDuplicateKeys",
+            "access": "",
+            "virtual": false,
+            "description": "This compares a prospective key value for an item with the current key values of its siblings and checks if an item already exists with that key. This method returns false if it is safe to apply the key to the item. If a match is found, the first one is immediately returned to you.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The ID of the item that will get a new key",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                },
+                {
+                    "name": "testKey",
+                    "type": "",
+                    "description": "The prospective value for the item (this value will be compared to its siblings)",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "The first sibling `item` with a key matching the _value_ argument or `false`"
+            }
+        },
+        {
+            "name": "getAvailableKey",
+            "access": "",
+            "virtual": false,
+            "description": "Generates and returns a unique key relative to it's siblings. This key will start out as _key_, and increment to _key (1), key (2),...key (n)_ on every call. This is important to note, as the appended number to the generated key won't necessarily be _1 incremented step_ above the next highest key. This is simply to improve efficiency and limit the amount of checks necessary. Also, note that this method will return a new, incremented key for every call. It will not try to find the lowest possible incremented number, it just increments, validates, and returns.",
+            "parameters": [
+                {
+                    "name": "itemId",
+                    "type": "",
+                    "description": "The id of the item to generate a key for.",
+                    "default": "",
+                    "optional": "",
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "string",
+                "description": "a valid key that the item can use"
+            }
+        },
+        {
+            "name": "toJSON",
+            "access": "",
+            "virtual": false,
+            "description": "Returns the object in its final format, as shown on screen.",
+            "parameters": [
+                {
+                    "name": "convertType",
+                    "type": "boolean",
+                    "description": "Pass `true` if you'd like item values to be converted into native types. The possible values that can be converted are `numbers/floats`, `null`, `undefined`, `true`, and `false`.",
+                    "default": "false",
+                    "optional": true,
+                    "nullable": ""
+                },
+                {
+                    "name": "preserveUndetermined",
+                    "type": "boolean",
+                    "description": "Pass `true` if you'd like any data item that has no chosen type (string/object/array) to be preserved in the final object with a value of `undefined`. Otherwise, any item with an undetermined type will not be provided in the returned object.",
+                    "default": "false",
+                    "optional": true,
+                    "nullable": ""
+                }
+            ],
+            "examples": [],
+            "returns": {
+                "type": "object",
+                "description": "a javascript object containing the user's data as it appears on the screen"
+            }
+        }
+    ]
+}

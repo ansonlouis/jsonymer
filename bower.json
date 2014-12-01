@@ -1,11 +1,15 @@
 {
   "name": "jsonymer-site",
   "description": "Website Docs for jsonymer editor",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "authors": [
     "Anson <ansonairoldi@gmail.com>"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#master"
+    "polymer": "Polymer/polymer#master",
+    "prism-js": "~0.1.0"
+  },
+  "resolutions": {
+    "polymer": "master"
   }
 }

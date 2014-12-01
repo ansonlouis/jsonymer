@@ -1,0 +1,67 @@
+<!-- include polymer -->
+<!-- <link rel="import" href="../bower_components/polymer/polymer.html"> -->
+
+<polymer-element name="markdown-element" attributes="">
+  <template>
+    <style>
+      span#md{
+        line-height: 18px;
+      }
+      code.inline{
+        background-color: #FCE9E9;
+        padding: 2px 5px;
+        font-weight: 400;
+        font-family: consolas;
+        font-size: 14px;
+      }
+      b{
+        font-weight: 500;
+      }
+    </style>
+
+    <span id="md"></span>
+
+  </template>
+  <script>
+    (function() {
+      Polymer('markdown-element', {
+        
+        content : '',
+
+
+        domReady: function(){
+          this.content = this.innerHTML;
+        },
+
+        contentChanged : function(){
+          this.parseMarkdown();
+        },
+
+        parseMarkdown : function(){
+
+          var text = this.content;
+
+          text = text.replace(/_(.*?)_/gi, function(match, contents){
+            return "<i>" + contents + "</i>";
+          });
+
+          text = text.replace(/\*(.*?)\*/gi, function(match, contents){
+            return "<b>" + contents + "</b>";
+          });
+
+          text = text.replace(/```(.*)\s([\s\S]*?)```/gi, function(match, language, contents){
+            return '<prism-js language="'+language+'">' + contents + '</prism-js>';
+          });
+
+          text = text.replace(/`(.*?)`/gi, function(match, contents){
+            return "<code class='inline'>" + contents + "</code>";
+          });
+
+          this.$.md.innerHTML = text;  
+        },
+
+
+      });
+    })();
+  </script>
+</polymer-element>

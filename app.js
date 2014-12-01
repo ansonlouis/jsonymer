@@ -58,60 +58,170 @@
 
 
 
-  app.controller('DocsController', function($scope, $element){
-    console.log($scope);
-
-    $scope.sections = [
-
-      { label : "Overall", head : true },
-      { label : "Basic Use" },
-      { label : "The jsonymer data structure" },
-      { label : "Dealing with falsey values and types" },
-      { label : "Dealing with errors" },
-
-      { label : "Methods & Properties", head : true },
-      { label : "toJSON()" },
-      { label : "setError()" },
-      { label : "getError()" },
-      { label : "clearError()" },
-      { label : "hasError()" },
-      { label : "checkDuplicateKeys()" },
-
-      { label : "Events", head : true },
-      { label : "beforeItemAdded" },
-      { label : "itemAdded" },
-      { label : "beforeItemRemoved" },
-      { label : "itemRemoved" },
-      { label : "keyValueChanged" },
-      { label : "propertyValueChanged" },
-      { label : "beforeItemTypeRemoved" },
-      { label : "itemTypeRemoved" },
-      { label : "edit" },
-      { label : "dirty" },
-      { label : "clean" }
-
-    ];
 
 
-    $scope.activeIndex = 1;
-    $scope.active = $scope.sections[$scope.activeIndex].label;
+
+  app.directive('docItem', function(){
+    return {
+      restrict: "E",
+      scope: {
+        methoddata: "@methoddata"
+      },
+      templateUrl: _cfg.baseUrl + "/pages/doc-item.html",
+      controller: "DocItemController"
+    };
+  });
+
+  app.controller('DocItemController', function($scope, $element){
+    // console.log("doc item!", $scope);
+    $scope.method = {};
+    $scope.method = JSON.parse($scope.methoddata);
+    // console.log("doc item!", $scope.method);
+
+  });
+
+
+
+
+  app.directive('eventItem', function(){
+    return {
+      restrict: "E",
+      scope: {
+        eventdata: "@eventdata"
+      },
+      templateUrl: _cfg.baseUrl + "/pages/event-item.html",
+      controller: "EventItemController"
+    };
+  });
+
+  app.controller('EventItemController', function($scope, $element){
+    // console.log("doc item!", $scope);
+    $scope.event = {};
+    $scope.event = JSON.parse($scope.eventdata);
+    // console.log("doc item!", $scope.method);
+
+  });
+
+
+
+
+
+
+
+
+
+
+  app.controller('DocsController', function($scope, $element, $http){
+
+    $scope.overall = {
+      label : "Overall",
+      sections : [
+        { name : "Basic Use" },
+        { name : "The jsonymer data structure" },
+        { name : "Dealing with falsey values and types" },
+        { name : "Dealing with errors" }
+      ]
+    };
+
+    $scope.methods = {
+      label : "Methods & Properties",
+      sections : [
+
+      ]
+    };
+
+    $scope.events = {
+      label : "Events",
+      sections : [
+
+      ]
+    };
+
+
+    // $scope.sections = [
+
+    //   // { label : "Overall", head : true },
+
+
+    //   { label : "Methods & Properties", head : true },
+    //   { label : "toJSON()" },
+    //   { label : "setError()" },
+    //   { label : "getError()" },
+    //   { label : "clearError()" },
+    //   { label : "hasError()" },
+    //   { label : "removeItem()" },
+    //   { label : "setKeyValue()" },
+    //   { label : "setPropertyValue()" },
+    //   { label : "removeValue()" },
+    //   { label : "getNextItem()" },
+    //   { label : "getNextSibling()" },
+    //   { label : "getParent()" },
+    //   { label : "createNewItem()" },
+    //   { label : "getAvailableKey()" },
+
+    //   { label : "Events", head : true },
+    //   { label : "beforeItemAdded" },
+    //   { label : "itemAdded" },
+    //   { label : "beforeItemRemoved" },
+    //   { label : "itemRemoved" },
+    //   { label : "keyValueChanged" },
+    //   { label : "propertyValueChanged" },
+    //   { label : "beforeItemTypeRemoved" },
+    //   { label : "itemTypeRemoved" },
+    //   { label : "edit" },
+    //   { label : "dirty" },
+    //   { label : "clean" }
+
+    // ];
+
+    $scope.allSections = [];
+
+
+    $scope.activeIndex = 0;
+    $scope.active = $scope.overall.sections[$scope.activeIndex].name;
+
+    var addToKeyMap = function(sections){
+      for(var i=0; i<sections.length; i++){
+        var sect = sections[i];
+        sect.idx = $scope.allSections.length;
+        $scope.allSections.push(sect);
+      }
+    };
+
+
+
+    $scope.init = function(){
+      $http.get(_cfg.baseUrl + "/pages/docs.json")
+      .success(function(data){
+        console.log(data);
+        $scope.allSections = [];
+        $scope.methods.sections = data.functions;
+        $scope.events.sections = data.events;
+
+        addToKeyMap($scope.overall.sections);
+        addToKeyMap($scope.methods.sections);
+        addToKeyMap($scope.events.sections);
+
+        console.log($scope.allSections);
+      });
+    };
 
 
     $scope.isActive = function(section){
-      return $scope.active === section.label;
+      return $scope.active === section.name;
     };
 
     $scope.makeActive = function(index, scrollTo){
-      var section = $scope.sections[index];
+      var section = $scope.allSections[index];
       if(!section.head){
-        $scope.active = section.label;
+        $scope.active = section.name;
         $scope.activeIndex = index;
         scrollTo && goToSection($scope.active);        
       }
     };
 
 
-    var $nav = $element.find('ul#doc-items');
+    var $nav = $element.find('div#doc-items');
     var nav_offset = null;
     var nav_fixed = false;
     var nav_buffer = 20;
@@ -119,8 +229,8 @@
 
     var getNextSection = function(index){
 
-      while(++index < $scope.sections.length){
-        var section = $scope.sections[index];
+      while(++index < $scope.allSections.length){
+        var section = $scope.allSections[index];
         if(section && !section.head){
           return index;
         }
@@ -133,7 +243,7 @@
     var getPreviousSection = function(index){
 
       while(--index >= 0){
-        var section = $scope.sections[index];
+        var section = $scope.allSections[index];
         if(section && !section.head){
           return index;
         }
@@ -144,7 +254,7 @@
     };    
 
     var autoCheck = true;
-    var onScroll = function(){
+    var onScrollWindow = function(){
       if(autoCheck){
         var scrollTop = window.scrollY;
 
@@ -161,36 +271,52 @@
             "top" : ""
           });        
         }
-
+        
         var activeSection = $element.find('a[target="' + $scope.active + '"]');
-        if(activeSection.offset().top <= scrollTop){
 
-          // console.log("ITS UNDER!");
+        if(activeSection.length){
 
-          var nextIndex = getNextSection($scope.activeIndex);
-          if(nextIndex){
-            var nextSection = $scope.sections[nextIndex];
-            nextSection = $element.find('a[target="' + nextSection.label + '"]');
-            if(nextSection.offset().top < scrollTop){
-              $scope.makeActive(nextIndex, false);
+          if(activeSection.offset().top <= scrollTop){
+
+            var nextIndex = getNextSection($scope.activeIndex);
+            if(nextIndex){
+              var nextSection = $scope.allSections[nextIndex];
+              nextSection = $element.find('a[target="' + nextSection.name + '"]');
+              if(nextSection.length && nextSection.offset().top < scrollTop){
+                $scope.makeActive(nextIndex, false);
+                $scope.$apply();
+              }
+            }
+
+          }else{
+            var previousIndex = getPreviousSection($scope.activeIndex);
+            if(previousIndex !== null){
+              var prevSection = $scope.allSections[previousIndex];
+              prevSection = $element.find('a[target="' + prevSection.name + '"]');
+              $scope.makeActive(previousIndex, false);
               $scope.$apply();
             }
           }
-
-        }else{
-
-          var previousIndex = getPreviousSection($scope.activeIndex);
-          if(previousIndex){
-            var prevSection = $scope.sections[previousIndex];
-            prevSection = $element.find('a[target="' + prevSection.label + '"]');
-            $scope.makeActive(previousIndex, false);
-            $scope.$apply();
-          }        
 
         }
       }
 
     };    
+
+
+    var onScrollNav = function(e){
+      var scrollTop = $nav[0].scrollTop;
+      // scroll up
+      if(e.originalEvent.wheelDelta >=  0 && scrollTop === 0){
+        e.stopPropagation();
+        return false;
+      }
+      // scroll down
+      else if(e.originalEvent.wheelDelta < 0 && $nav[0].scrollTop + scrollTop >= $nav[0].clientHeight){
+        e.stopPropagation();
+        return false;
+      }
+    }
 
 
     var goToSection = function(section){
@@ -206,70 +332,30 @@
 
 
     $scope.$on('$destroy', function(){
-      console.log("docs destroyed");
-      $(window).unbind('scroll', onScroll);
+      $(window).unbind('scroll', onScrollWindow);
+      $nav.unbind('mousewheel', onScrollNav);
+
     });
 
     setTimeout(function(){
       nav_offset = $nav.offset().top;
-      $(window).bind('scroll', onScroll);
+      $(window).bind('scroll', onScrollWindow);
+      $nav.bind('mousewheel', onScrollNav);
     },1000);
 
 
-    // $scope.nav = [];
-
-    // var parseToc = function(str){
-
-    //   var reg = /(-\s(.*))|(###(.*))/gi;
-    //   var parts = str.match(reg);
-
-    //   for(var i=0; i<parts.length; i++){
-    //     var p = parts[i];
-    //     if(p[0] === "-"){
-    //       $scope.nav.push(p.substr(2));
-    //     }else{
-    //       $scope.nav.push(p.substr(3));
-    //     }
-    //   }
-    //   console.log($scope.nav);
-    //   $scope.$apply();
-
-    // };
-
-    // var parseContent = function(str){
-
-    // };
-
-
-    // $.get('README.md').done(function(response){
-
-    //   var reg = /<!--parseStart-->([\S\s]*?)<!--parseEnd-->/gi;
-    //   var pieces = reg.exec(response);
-    //   var i = 0;
-
-    //   while(pieces != null && pieces.length > 1){
-
-    //     var piece = pieces[1];
-    //     // console.log(piece);
-
-    //     if(i === 0){
-    //       parseToc(piece);
-    //       i++;
-    //     }else{
-    //       parseContent(piece);
-    //       return;
-    //     }
-
-    //     pieces = reg.exec(response);
-
-    //   }
-
-
-
-
-    // });
+    $scope.init();
 
   });
+
+
+
+
+
+
+
+
+
 
 
 

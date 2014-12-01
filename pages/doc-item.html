@@ -1,0 +1,33 @@
+<div class="method">
+  <a target="{{method.name}}"></a>
+
+  <h3>
+    .{{method.name}}(
+      <span ng-repeat="arg in method.parameters">
+        <span ng-if="arg.optional">[</span><span class="param">{{arg.name}}</span><span ng-if="arg.default">={{arg.default}}</span><span ng-if="arg.optional">]</span><span ng-if="!$last">,</span>
+      </span>
+    )
+  </h3>
+
+
+  <div>
+    <p><markdown-element>{{method.description}}</markdown-element></p>
+
+    <div class="io" ng-if="method.parameters || method.returns">
+
+      <h4>Arguments &amp; Return Value</h4>
+      <div>
+        <div class="param cf" ng-repeat="param in method.parameters">
+          <span class="name"><span class="paren" ng-if="param.optional">[</span>{{param.name}}<span class="paren" ng-if="param.optional">]</span></span>
+          <span class="desc"><markdown-element>{{param.description}}</markdown-element></span>
+        </div>
+        
+        <div ng-if="method.returns" class="return cf">
+          <span class="type">{{method.returns.type}}</span>
+          <span class="desc"><markdown-element>{{method.returns.description}}</markdown-element></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

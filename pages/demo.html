@@ -7,7 +7,8 @@
     </div>
     <div id="demo-right" class="right">
       <h3>Live Preview</h3>
-      <pre><code id="live-preview" class="language-javascript">preview</code></pre>
+      <prism-js id="live-preview" language="javascript"></prism-js>
+      <!-- <pre><code id="live-preview" class="language-javascript">preview</code></pre> -->
     </div>
   </div>
 
@@ -17,7 +18,7 @@
 
       <div id="code-left">
         <h4>HTML</h4>
-        <code class="language-markup" ng-controller="PrismController">
+        <prism-js language="markup" class="demo-code">
 &lt;!-- path to the jsonymer element -->
 &lt;link rel="import" href="jsonymer/jsonymer-editor.html">
 &lt;div id="jsonymerWrap">
@@ -26,11 +27,11 @@
 &lt;div>
   &lt;pre id="livePreview">&lt;/pre>
 &lt;/div>
-        </code>
+        </prism-js>
       </div>
       <div id="code-right">
         <h4>Javascript</h4>
-        <code class="language-javascript" ng-controller="PrismController">
+        <prism-js language="javascript" class="demo-code">
 // get our jsonymer element, as well as the live preview "pre"
 var editor = document.getElementById('editor');
 var preview = document.getElementById('livePreview');
@@ -59,7 +60,7 @@ editor.addEventListener('domReady', function(){
   }, false);
 
 }, false);
-        </code>
+        </prism-js>
       </div>
 
     </div>
@@ -74,19 +75,21 @@ document.getElementById('editor').addEventListener('domReady', function(){
 
   this.obj = {
     "name" : "Joe",
-    "occupation" : "Banana Sales",
-
     "" : "",
-    "null" : null,
-    "undefined" : undefined,
-    "false" : false,
-    "true" : true,
+    "nullProperty" : null,
     "0" : 0,
-    "1" : 1
-
+    "1" : 1,
+    "object" : {
+      "falseProperty" : false,
+      "trueProperty" : true
+    },
+    "array" : [
+      "The Next Item shouldn't show up in preview",
+      { "undefinedProperty" : undefined }
+    ]
   };
 
-  preview.innerHTML = JSON.stringify(this.obj, null, 2);
+  preview.inputValue = JSON.stringify(this.obj, null, 2);
   Prism.highlightElement(preview);
 
   this.addEventListener('edit', function(){
@@ -96,7 +99,7 @@ document.getElementById('editor').addEventListener('domReady', function(){
 
     var jsonString = this.toJSON(true, true);
 
-    preview.innerHTML = JSON.stringify(jsonString, null, 2);
+    preview.inputValue = JSON.stringify(jsonString, null, 2);
     Prism.highlightElement(preview);
 
   }, false);

@@ -130,6 +130,7 @@ header ul li.active:after {
 #content div{
   box-sizing:border-box;
   -moz-box-sizing:border-box;
+  position: relative;
 }
 
 #about-left{
@@ -146,13 +147,15 @@ header ul li.active:after {
   font-size: 14px;
   padding-top: 6px;
 }
-h1 span.operator{
+span.operator{
   color: #9b2d58;
   font-weight: 400;
+  font-family: consolas;
 }
-h1 span.paren{
+span.paren{
   color: #6e76b4;
-  font-weight: 400;
+  font-weight: 700;
+  font-family: consolas;
 }
 span.code{
   background-color: #FCE9E9;
@@ -226,31 +229,39 @@ ul#features li:before{
 }
 
 /*** DOCS ***/
-ul#doc-items{
+div#doc-items{
   position: absolute;
   width: 300px;
   margin: 0;
   padding: 0;
+  padding-bottom: 400px;
   margin-top: 40px;
-  border-right: 1px solid #CCC;
+  /*border-right: 1px solid #CCC;*/
+  top: 0;
+  bottom: 0;
+  overflow: auto;
 }
-ul#doc-items li{
+#doc-items ul{
+  margin: 0;
+  padding: 0;
+}
+#doc-items li{
   padding: 0;
   margin: 0;
   color: #6e76b4;
   cursor: pointer;
   border-bottom: 1px solid transparent;
 }
-ul#doc-items li:not(.head):hover{
+#doc-items li:not(.head):hover{
   color: #9b2d58;  
 }
-ul#doc-items li.head{
+#doc-items li.head{
   font-weight: 700;
   padding:15px 0px 2px 0px;
   color: inherit;
   cursor: default;
 }
-ul#doc-items li.active{
+#doc-items li.active{
   color: #9b2d58;
   border-right: 4px solid #DDD;
   border-bottom: 1px solid #DDD;
@@ -317,13 +328,15 @@ div.method .io .return{
   position: relative;
   /*padding:5px 5px 5px 35px;*/
   padding-left: 35px;
-  border-bottom: 1px dashed #EEE;
+  border-top: 1px dashed #EEE;
 }
-div.method .io .param:last-child,
-div.method .io .return:last-child{
-  border-bottom: 0;
+div.method .io .param:first-child,
+div.method .io .return:first-child{
+  border-top: 0;
 }
-
+div.method .io .return{
+  border-top:1px solid rgba(155, 45, 88, .3);
+}
 div.method .io .param:before,
 div.method .io .return:before{
   content: '';
@@ -346,7 +359,7 @@ div.method .io .return:before{
 
 div.method .io .param .name,
 div.method .io .return .type{
-  font-weight: 700;
+  font-weight: 500;
 }
 div.method .io .desc{
 }
