@@ -1,7 +1,7 @@
 {
   "name": "jsonymer",
   "description" : "A Polymer Web Component to edit a JSON structure",
-  "version": "0.1.0",
+  "version": "1.0.3",
   "license" : "MIT",
   "main" : "jsonymer-editor.html",
   "authors": [
@@ -21,6 +21,9 @@
   ],
   "ignore" : [
     "bower_components",
-    "node_modules"
+    "node_modules",
+    "test",
+    "coverage",
+    "component"
   ]
 }

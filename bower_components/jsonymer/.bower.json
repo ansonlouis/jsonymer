@@ -1,7 +1,7 @@
 {
   "name": "jsonymer",
   "description": "A Polymer Web Component to edit a JSON structure",
-  "version": "0.1.1",
+  "version": "1.0.3",
   "license": "MIT",
   "main": "jsonymer-editor.html",
   "authors": [
@@ -21,16 +21,18 @@
   ],
   "ignore": [
     "bower_components",
-    "node_modules"
+    "node_modules",
+    "test",
+    "coverage",
+    "component"
   ],
-  "_release": "0.1.1",
+  "_release": "1.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.1.1",
-    "commit": "7c8f4c91e6f43176a0fb6e52885d6ded1ac4c879"
+    "tag": "1.0.3",
+    "commit": "69cbb6401c6414288df3ca0bfee72a11afa12252"
   },
   "_source": "git://github.com/ansonlouis/jsonymer.git",
-  "_target": "~0.1.1",
-  "_originalSource": "jsonymer",
-  "_direct": true
+  "_target": "~1.0.0",
+  "_originalSource": "jsonymer"
 }
