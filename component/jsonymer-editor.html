@@ -1,0 +1,167 @@
+<link rel="import" href="<%= bower_root %>/polymer/polymer.html">
+
+
+<polymer-element name="jsonymer-editor" attributes="obj">
+
+  <template>
+
+    <link rel="stylesheet" type="text/css" href="jsonymer-editor.css" />
+
+    <div id="wrap">
+
+      <div class="cf">
+        <span class="bracket obj master-bracket"></span>
+        <a id="add-item-start" data-id="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+      </div>
+
+      <template if="{{cObj}}">
+
+          <ul id="master" class="group cf">
+
+            <!-- main loop template -->
+            <template id="loop_root" repeat="{{item in cObj.value}}">
+
+              <!-- each individual item will be one of these: li.item -->
+              <li 
+              id="item-{{item.id}}" 
+              class="item cf" 
+              locked?="{{item.locked}}"
+              error?="{{item.error}}"
+              title="{{item.error && item.error.error}}"
+              on-mouseenter="{{showControls}}" 
+              on-mouseleave="{{hideControls}}">
+
+
+                <!-- horizontal border for visual reference with nested children -->
+                <span class="horiz-border"></span>
+
+
+                <!-- the items key -->
+                <span class="key">
+
+                  <div class="controls cf">
+                    <div class="delete" data-id="{{item.id}}" on-click="{{removeItem}}" title="Remove Item"></div>
+                    <template if="{{item.type}}">
+                      <div data-id="{{item.id}}" class="remove-type" on-click="{{removeValue}}" title="Remove Item Value"></div>
+                    </template>
+                  </div>
+                  
+
+                  <span 
+                  data-id="{{item.id}}" 
+                  class="key-value" 
+                  contenteditable?="{{item.editmode}}"
+                  on-focus="{{doFocus}}" 
+                  on-keyDown="{{checkEnterKey}}"
+                  on-keyUp="{{doKeyUp}}"
+                  on-input="{{setKeyValue}}"
+                  on-blur="{{doBlur}}"
+                  tabIndex="{{item.parent && item.parent.type == 'array' ? -1 : 1}}"
+                  disabled?="{{item.parent && item.parent.type == 'array'}}"
+                  >{{item.key}}</span>
+                  
+                  <!-- if the item has a value and its value is object/array, show the opening bracket -->
+                  <template if="{{item.value | isArray}}">
+                    <span class="dash object-dash"></span>
+                    <span class="bracket {{item.type=='object'?'obj':'arr'}}"></span>
+                    <a data-id="{{item.id}}" class="add-item add-item-child noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+                  </template>
+                </span>
+
+                
+                <template if="{{!item.type}}">
+                  <span class="dash"></span>
+                  <a class="new-item-option new-item-text noselect" data-id="{{item.id}}" on-click="{{makeItemText}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property a string"></a>
+                  <a class="new-item-option new-item-object noselect" data-id="{{item.id}}" on-click="{{makeItemObject}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an object"></a>
+                  <a class="new-item-option new-item-array noselect" data-id="{{item.id}}" on-click="{{makeItemArray}}" on-keyDown="{{onEnterDoClick}}" tabindex="1" title="Make this property an array"></a>
+                </template>
+
+                <template if="{{item.type}}">
+
+                  <template if="{{item.value | isNotArray}}">
+
+                    <span class="dash"></span>
+
+                    <span 
+                    data-id="{{item.id}}" 
+                    class="value" 
+                    contenteditable?="{{item.editmode}}" 
+                    on-focus="{{doFocus}}" 
+                    on-keyDown="{{checkEnterKey}}"
+                    on-input="{{setPropertyValue}}"
+                    on-blur="{{doBlur}}"
+                    tabIndex="1">{{item.value}}</span>
+
+                  </template>
+
+                  <template if="{{item.value | isArray}}">
+
+                    <template if="{{kArr[item.id].value.length}}">
+                      <ul class="group cf deep">
+                        <template ref="loop_root" repeat="{{item in kArr[item.id].value}}"></template>
+                      </ul>
+                    </template>
+
+                    <template if="{{!kArr[item.id].value.length}}">
+                      <ul class="group empty cf deep">
+                        <li class="item">This item is empty</li>
+                      </ul>
+                    </template>
+
+                    <span class="bracket bracket-close {{item.type=='object'?'obj':'arr'}}">
+                    </span>
+                  </template>
+
+                </template>
+
+              </li>
+
+            </template><!-- end object loop -->
+
+          </ul>
+
+          <div class="cf">
+            <span class="bracket bracket-close obj master-bracket"></span>
+            <a id="add-item-end" data-id="-1" class="add-item add-item-master noselect" on-click="{{addItem}}" tabindex="1" on-keyDown="{{onEnterDoClick}}"></a>
+          </div>
+          
+
+      </template>
+
+      <template if="{{!obj}}">
+        <div id="none-found">{{objError}}</div>
+      </template>
+
+    </div>
+
+  </template>
+
+  <script type="application/javascript" src="jsonymer-editor.js" data-cover></script>
+
+</polymer-element>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
