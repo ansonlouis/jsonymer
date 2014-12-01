@@ -73,11 +73,8 @@
   });
 
   app.controller('DocItemController', function($scope, $element){
-    // console.log("doc item!", $scope);
     $scope.method = {};
     $scope.method = JSON.parse($scope.methoddata);
-    // console.log("doc item!", $scope.method);
-
   });
 
 
@@ -95,11 +92,8 @@
   });
 
   app.controller('EventItemController', function($scope, $element){
-    // console.log("doc item!", $scope);
     $scope.event = {};
     $scope.event = JSON.parse($scope.eventdata);
-    // console.log("doc item!", $scope.method);
-
   });
 
 
@@ -193,7 +187,7 @@
     $scope.init = function(){
       $http.get(_cfg.baseUrl + "/pages/docs.json")
       .success(function(data){
-        console.log(data);
+
         $scope.allSections = [];
         $scope.methods.sections = data.functions;
         $scope.events.sections = data.events;
@@ -202,7 +196,6 @@
         addToKeyMap($scope.methods.sections);
         addToKeyMap($scope.events.sections);
 
-        console.log($scope.allSections);
       });
     };
 
