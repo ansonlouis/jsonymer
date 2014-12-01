@@ -1293,6 +1293,10 @@ errors : {
 
       item.setAttribute('contenteditable', true);
 
+      if(elToFocus === "value" || item.classList.contains('value')){
+        item.innerHTML = obj.value;
+      }
+
     },
 
 
