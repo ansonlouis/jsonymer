@@ -56,7 +56,9 @@ a{
 ul li{
   list-style: none;
 }
-
+.relative{
+  position: relative;
+}
 
 header{
   background-color: #9b2d58;
@@ -130,7 +132,7 @@ header ul li.active:after {
 #content div{
   box-sizing:border-box;
   -moz-box-sizing:border-box;
-  position: relative;
+  /*position: relative;*/
 }
 
 #about-left{
