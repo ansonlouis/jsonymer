@@ -33,18 +33,18 @@ h1, h2{
   border-bottom: 1px solid #CCC;
   padding-bottom: 5px;
 }
-pre, code{
+pre{
   display: block;
   margin: 0;
   padding: 0;
 }
-code{
+/*prism-js code{
   background: #FFF!important;
   border: 1px solid gainsboro;
   border-radius: 0px;
   margin:0px;
   padding: 10px;
-}
+}*/
 pre[class*="language-"]{
   padding: 0!important;
   margin: 0!important;
@@ -283,10 +283,11 @@ div.p{
   margin: 15px 0;
   font-size: 15px;
 }
-div#doc-content code{
+
+/*div#doc-content code{
   margin: 20px 0;
   padding: 5px 8px;
-}
+}*/
 
 div.block{
   margin: 20px 0px 60px 0px;
@@ -377,12 +378,12 @@ div.method .io .desc{
 .block .detail div{
   font-size: 14px;
 }
-.block .detail div span{
+.block .detail div > span{
   font-weight: 500;
   font-style: normal;
   font-size: 15px;
 }
-.block .detail div span,
+.block .detail div > span,
 div.method .io .param .name,
 div.method .io .return .type{
   float: left;
