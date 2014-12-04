@@ -102,14 +102,15 @@ li span.key-value{
   top: 7px;
 }
 li.item span.dash{
-  width: 16px;
-  height: 10px;
-  margin: 3px 5px 0px 7px;
   position: relative;
-  background-image: url(images/arrow-right.png);
-  /*background-image: url(images/icon-sprite.png);*/
-  background-size: 100%;
   background-repeat: no-repeat;
+  width: 18px;
+  height: 12px;
+  margin: 3px 5px 0px 7px;
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: 0px -15px;
+
 }
 li.item span.dash.object-dash{
   margin: 4px 5px 3px 5px;
@@ -129,14 +130,14 @@ li.item[error] > span.key span.dash:before,
 li.item[error] > span.dash:before{
   content: '';
   position: absolute;
-  top: -2px;
-  background-image: url(images/error.png);
-  background-size: 100%;
-  background-position: center;
+  top: -3px;
   background-repeat: no-repeat;
   width: 100%;
-  height: 16px;
   background-color: #FFF;
+  height: 17px;
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: 0px -59px;
 }
 
 a{
@@ -149,13 +150,15 @@ a:hover{
 
 a.add-item{
   position: relative;
-  background-image: url(images/plus.png);
-  background-position: 0px;
-  background-size: 200%;
   background-repeat: no-repeat;
   width: 12px;
   height: 12px;
-  cursor: default;      
+  cursor: default;
+
+  /* spritify */
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: -1px -1px;
 }
 a.add-item-child{
   position: absolute;
@@ -168,7 +171,7 @@ a.add-item-master{
 }
 a.add-item:focus,
 a.add-item:hover{
-  background-position: -12px 0px;
+  background-position: -13px -1px;
   outline: none;
 }
 a.add-item:after{
@@ -235,6 +238,7 @@ span.key-value[disabled]{
   color: #868686;
   padding-right: 10px;
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  padding-top: 2px;
 }
 .master-bracket{
   float: left;
@@ -264,13 +268,16 @@ a.new-item-option{
   cursor: default;
   margin-right: 5px;
   text-align: center;
-
-  background-size: 100%;
   background-repeat: no-repeat;
-  width: 18px;
+  width: 20px;
   height: 18px;
   display: inline-block;
   opacity: .5;
+
+  /* spritify */
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: -28px 0px;
 }
 a.new-item-option:hover{
   text-decoration: underline;
@@ -282,13 +289,13 @@ a.new-item-option:focus{
   opacity: 1;
 }
 a.new-item-option.new-item-text{
-  background-image: url(images/text.png);
+  background-position: -28px -39px;
 }
 a.new-item-option.new-item-object{
-  background-image: url(images/obj-bracket.png);
+  background-position: -28px -20px;
 }
 a.new-item-option.new-item-array{
-  background-image: url(images/array-bracket.png);
+  background-position: -28px -1px;
 }
 div.controls{
   position: absolute;
@@ -298,43 +305,32 @@ div.controls{
 }
 div.delete{
   float: left;
-  font-size: 14px;
   padding: 0px 3px;
   cursor: default;
-  color: firebrick;
-  margin-top: 1px;
-  font-weight: 700;
-
-  background-image: url(images/x.png);
-  background-position: center;
   background-repeat: no-repeat;
-  background-size: 100%;
   width: 11px;
   height: 11px;
   margin-left: 2px;
   padding: 0;
   margin-top: 3px;
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: -1px -46px;
 }
 div.remove-type{
   float: left;
-  width: 6px;
-  font-size: 14px;
-  padding: 0px 3px;
-  margin-top: 0px;
-  color: TOMATO;
   cursor: default;
-  margin-left: 6px;
-  font-weight: 700;
-
-  background-image: url(images/back.png);
-  background-position: center;
   background-repeat: no-repeat;
-  background-size: 100%;
   width: 16px;
   height: 16px;
   margin-left: 6px;
   padding: 0;
   margin-top: 0px;
+
+  background-image: url(images/icon-sprite.png);
+  background-size: 56px 84px;
+  background-position: -1px -28px;
+
 }
 div.delete:hover,
 div.remove-type:hover{
